@@ -80,8 +80,11 @@ const coursesData = {
 };
 
 // Security Protections
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('keydown', e => {
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+document.addEventListener('keydown', function(e) {
     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || (e.ctrlKey && e.key === 'u')) {
         e.preventDefault();
     }
@@ -90,77 +93,92 @@ document.addEventListener('keydown', e => {
 // Build Sidebar Menu
 const treeContainer = document.getElementById('subjectTree');
 
-for (let subject in coursesData) {
-    let subjectItem = document.createElement('div');
-    subjectItem.className = 'accordion-item';
-    
-    let title = document.createElement('div');
-    title.className = 'accordion-title';
-    title.innerHTML = `<span>${subject}</span> <span>▼</span>`;
-    title.onclick = () => {
-        let content = title.nextElementSibling;
-        content.classList.toggle('active');
-    };
+if (treeContainer) {
+    for (let subject in coursesData) {
+        let subjectItem = document.createElement('div');
+        subjectItem.className = 'accordion-item';
+        
+        let title = document.createElement('div');
+        title.className = 'accordion-title';
+        title.innerHTML = `<span>${subject}</span> <span>▼</span>`;
+        title.onclick = function() {
+            let content = title.nextElementSibling;
+            if (content) {
+                content.classList.toggle('active');
+            }
+        };
 
-    let content = document.createElement('div');
-    content.className = 'accordion-content';
+        let content = document.createElement('div');
+        content.className = 'accordion-content';
 
-    for (let chapter in coursesData[subject]) {
-        let chapterTitle = document.createElement('div');
-        chapterTitle.className = 'chapter-heading';
-        chapterTitle.innerText = chapter;
-        content.appendChild(chapterTitle);
+        for (let chapter in coursesData[subject]) {
+            let chapterTitle = document.createElement('div');
+            chapterTitle.className = 'chapter-heading';
+            chapterTitle.innerText = chapter;
+            content.appendChild(chapterTitle);
 
-        coursesData[subject][chapter].forEach((videoId, index) => {
-            let link = document.createElement('a');
-            link.className = 'video-link';
-            link.innerText = `▶ Séance ${index + 1}`;
-            link.onclick = () => loadVideo(subject, chapter, index + 1, videoId);
-            content.appendChild(link);
-        });
+            coursesData[subject][chapter].forEach(function(videoId, index) {
+                let link = document.createElement('a');
+                link.className = 'video-link';
+                link.innerText = `▶ Séance ${index + 1}`;
+                link.onclick = function() {
+                    loadVideo(subject, chapter, index + 1, videoId);
+                };
+                content.appendChild(link);
+            });
+        }
+
+        subjectItem.appendChild(title);
+        subjectItem.appendChild(content);
+        treeContainer.appendChild(subjectItem);
     }
-
-    subjectItem.appendChild(title);
-    subjectItem.appendChild(content);
-    treeContainer.appendChild(subjectItem);
 }
 
-// Load Video with fallback button for Youtube Restrictions
+// Load Video
 function loadVideo(subject, chapter, index, id) {
-    document.getElementById('videoTitle').innerText = `${subject} ➔ ${chapter} (Séance ${index})`;
-    
-    const embedUrl = `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&enablejsapi=1`;
+    const videoTitle = document.getElementById('videoTitle');
     const iframe = document.getElementById('mainIframe');
     
-    iframe.src = embedUrl;
-    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    if (videoTitle) {
+        videoTitle.innerText = `${subject} ➔ ${chapter} (Séance ${index})`;
+    }
+    
+    if (iframe) {
+        iframe.src = `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&enablejsapi=1`;
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    }
 
     let actionArea = document.querySelector('.actions-bar');
     let externalBtn = document.getElementById('directYoutubeBtn');
     
-    if(!externalBtn) {
-        externalBtn = document.createElement('a');
-        externalBtn.id = 'directYoutubeBtn';
-        externalBtn.target = '_blank';
-        externalBtn.className = 'btn-pdf';
-        externalBtn.style.backgroundColor = '#ef4444';
-        externalBtn.style.color = '#fff';
-        externalBtn.style.marginRight = '10px';
-        externalBtn.style.textDecoration = 'none';
-        actionArea.prepend(externalBtn);
+    if (actionArea) {
+        if (!externalBtn) {
+            externalBtn = document.createElement('a');
+            externalBtn.id = 'directYoutubeBtn';
+            externalBtn.target = '_blank';
+            externalBtn.className = 'btn-pdf';
+            externalBtn.style.backgroundColor = '#ef4444';
+            externalBtn.style.color = '#fff';
+            externalBtn.style.marginRight = '10px';
+            externalBtn.style.textDecoration = 'none';
+            actionArea.prepend(externalBtn);
+        }
+        
+        externalBtn.href = `https://www.youtube.com/watch?v=${id}`;
+        externalBtn.innerHTML = `▶ Regarder sur YouTube`;
     }
-    
-    externalBtn.href = `https://www.youtube.com/watch?v=${id}`;
-    externalBtn.innerHTML = `▶ Regarder sur YouTube`;
 }
 
 // Handle Form Submission & Unlock Access
-document.getElementById('loginForm').addEventListener('submit', function() {
-    localStorage.setItem('bacInfoAccessGranted', 'true');
-});
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', function() {
+        localStorage.setItem('bacInfoAccessGranted', 'true');
+    });
+}
 
 // Check Access on Page Load
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', function() {
     if (localStorage.getItem('bacInfoAccessGranted') === 'true') {
         let modal = document.getElementById('loginModal');
         let status = document.getElementById('accessStatus');
