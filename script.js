@@ -79,7 +79,7 @@ const coursesData = {
     }
 };
 
-// Security Protections
+// Security Protections (Bloquer le Clic Droit & Inspecter)
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
 });
@@ -94,6 +94,7 @@ document.addEventListener('keydown', function(e) {
 const treeContainer = document.getElementById('subjectTree');
 
 if (treeContainer) {
+    treeContainer.innerHTML = '';
     for (let subject in coursesData) {
         let subjectItem = document.createElement('div');
         subjectItem.className = 'accordion-item';
@@ -134,7 +135,7 @@ if (treeContainer) {
     }
 }
 
-// Load Video
+// Load Video - Strict Embedded Player Only (Aucun bouton externe)
 function loadVideo(subject, chapter, index, id) {
     const videoTitle = document.getElementById('videoTitle');
     const iframe = document.getElementById('mainIframe');
@@ -144,28 +145,14 @@ function loadVideo(subject, chapter, index, id) {
     }
     
     if (iframe) {
-        iframe.src = `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&enablejsapi=1`;
-        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&controls=1&iv_load_policy=3&fs=1`;
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
     }
 
-    let actionArea = document.querySelector('.actions-bar');
+    // Supprimer le bouton YouTube s'il existe
     let externalBtn = document.getElementById('directYoutubeBtn');
-    
-    if (actionArea) {
-        if (!externalBtn) {
-            externalBtn = document.createElement('a');
-            externalBtn.id = 'directYoutubeBtn';
-            externalBtn.target = '_blank';
-            externalBtn.className = 'btn-pdf';
-            externalBtn.style.backgroundColor = '#ef4444';
-            externalBtn.style.color = '#fff';
-            externalBtn.style.marginRight = '10px';
-            externalBtn.style.textDecoration = 'none';
-            actionArea.prepend(externalBtn);
-        }
-        
-        externalBtn.href = `https://www.youtube.com/watch?v=${id}`;
-        externalBtn.innerHTML = `▶ Regarder sur YouTube`;
+    if (externalBtn) {
+        externalBtn.remove();
     }
 }
 
