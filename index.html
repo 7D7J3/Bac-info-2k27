@@ -1,74 +1,60 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plateforme Bac Info - Tunisie</title>
+    <title>Plateforme Bac Info</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Header / Navbar -->
-    <header class="navbar">
-        <div class="logo">
-            <h1>BAC INFO <span>TUNISIE</span></h1>
-        </div>
-        <div class="user-status-container">
-            <span id="accessStatus" class="status-locked">🔒 Accès Non Autorisé</span>
-        </div>
-    </header>
-
-    <!-- Modal Formulaire Login / Demande d'accès -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-box">
-            <h2>Espace Élève - Bac Info</h2>
-            <p>Veuillez remplir vos informations pour débloquer l'accès immédiat aux cours.</p>
-            
-            <form action="https://api.web3forms.com/submit" method="POST" id="loginForm">
-                <input type="hidden" name="access_key" value="d55f35a8-f325-4d2c-88e4-26ccd4c04cf7">
-                <input type="hidden" name="subject" value="Nouvelle Demande d'Accès Bac Info">
-
-                <div class="form-group">
-                    <label for="fullName">Nom et Prénom :</label>
-                    <input type="text" id="fullName" name="name" placeholder="Ex: Mohamed Ben Salah" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="userEmail">Email :</label>
-                    <input type="email" id="userEmail" name="email" placeholder="Ex: exemple@gmail.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="userMessage">Niveau / Remarque :</label>
-                    <textarea id="userMessage" name="message" placeholder="Je souhaite accéder aux cours de Bac Info..." required></textarea>
-                </div>
-
-                <button type="submit" class="btn-submit">Débloquer l'Accès Maintenant 🚀</button>
+    <!-- Modal d'accès -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>🔒 Accès à la Plateforme</h2>
+            <p>Veuillez entrer vos informations pour accéder aux cours.</p>
+            <form id="loginForm">
+                <input type="text" placeholder="Nom & Prénom" required>
+                <input type="email" placeholder="Adresse Email" required>
+                <button type="submit" class="btn-submit">Valider & Accéder</button>
             </form>
-            <p class="note">* L'accès sera débloqué instantanément après l'envoi.</p>
         </div>
     </div>
 
-    <!-- Interface Principale des Cours -->
-    <div class="container main-layout">
+    <!-- Header -->
+    <header class="navbar">
+        <div class="logo">🎓 Bac Info Platform</div>
+        <div id="accessStatus" class="status-locked">🔒 Accès Restreint</div>
+    </header>
+
+    <!-- App Layout -->
+    <div class="main-container">
         
-        <!-- Sidebar : Navigation par Matières et Chapitres -->
+        <!-- Sidebar : Navigation par Matière -->
         <aside class="sidebar">
-            <h3>📚 Matières & Chapitres</h3>
-            <div class="accordion" id="subjectTree">
-                <!-- Généré dynamiquement par JS -->
+            <h3>📂 Programme Bac Info</h3>
+            <div id="subjectTree" class="tree-menu">
+                <!-- Généré dynamiquement par script.js -->
             </div>
         </aside>
 
-        <!-- Main Content : Lecteur Vidéo & PDF -->
+        <!-- Main Content : Lecteur Vidéo & Protection Overlay -->
         <main class="content-area">
             <div class="video-player-card">
                 <h2 id="videoTitle">Sélectionnez une vidéo dans le menu à gauche 👈</h2>
                 
                 <div class="video-container">
-                    <iframe id="mainIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <!-- Iframe YouTube avec Player API -->
+                    <iframe id="mainIframe" src="" frameborder="0" allow="autoplay"></iframe>
+                    <!-- Shield transparent : Bloque 100% les clics vers YouTube -->
+                    <div class="video-overlay" id="videoOverlay"></div>
+                </div>
+
+                <!-- Custom Controls Bar -->
+                <div class="custom-controls">
+                    <button id="playPauseBtn" class="btn-ctrl">▶ Play / Pause</button>
+                    <span id="playerStatus" class="ctrl-status">Cliquez sur Play pour lancer</span>
                 </div>
 
                 <div class="actions-bar">
