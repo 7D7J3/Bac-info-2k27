@@ -28,7 +28,7 @@ const coursesData = {
         "Trimestre 1": [
             "wRDKMs8_z3A", "4syFXHGbzpg", "XAQ9-hfTygo", "scWTkw1iU4o", "jh1xun9boZ4", "74nTDiO34EE", "-GMiKisOTmk", 
             "NWGUrAkJGwI", "ynbE18DkuB8", "AaZZ2hNSyFM", "C5wldBYUUhY", "ME9qVYPG02k", "lWXKeBOCdSA", "i1fqvWiVIvA", 
-            "YNB8PGM5IPc", "mX3y12i-nmc", "1IeHHca_F18", "cMv7nFtHpGg", "oQw8cGdGbYQ"
+            "YNB8PGM5IPc", "mX3y12i-nmc", "1IeHHca_F18", "cMv7nFtHpGg", "oQw8cGbGbYQ"
         ],
         "Trimestre 2": [
             "LLqUvqxbIFk", "CNIvYQefF-c", "t0CK3zqTdiw", "8QBYx_kZyso", "w2qg0t8anRs", "BcHwkOL6ty0", "FG6gQLiA6Kk", 
@@ -70,8 +70,11 @@ const coursesData = {
     "STI (Mr Omar)": {
         "Notion BD & SGBD": ["-nP0ZrLrG9E", "WHQfkfHvt44", "neFED6AEPME", "VSesY9Z2VWk", "8wikOQI3308", "e4OXXqdV3YY", "rVlDHxJyWT4", "6GecxuDL0B0", "12ZQ6wjV37s", "TUgBdRIAUQo", "IaIhkjl3I6k", "YiXVdEpbASM"],
         "Structure BD": ["4OlPIQ67Xso"],
-        "LDD & LMD": ["6wBvSPaU7W8", "paa0f4AMVXU", "2v8AsZV-Arg", "a5mRCa3r85A"],
-        "Web & JS": ["htmsE7aW96A", "MJ2RaGQ-q-U", "qu2K_TwXGf4", "2YvgPaKVfco", "6dnat3KjtLY", "30ytYN09wbY", "_3xe8JCYE8U", "FhWz9q9c0jk", "fbWl54vPNEI"],
+        "LDD": ["6wBvSPaU7W8", "paa0f4AMVXU", "2v8AsZV-Arg", "a5mRCa3r85A"],
+        "LMD": ["6wBvSPaU7W8", "paa0f4AMVXU"],
+        "HTML + CSS": ["htmsE7aW96A", "MJ2RaGQ-q-U"],
+        "HTML + CSS + JS": ["qu2K_TwXGf4", "2YvgPaKVfco"],
+        "JS": ["6dnat3KjtLY", "30ytYN09wbY", "_3xe8JCYE8U", "FhWz9q9c0jk", "fbWl54vPNEI"],
         "PHP": ["J9EBhF6XzXA", "YTycfNlhuhM", "gyb22p5MJNE"],
         "Travaux Théoriques": ["6MJ4c8y3ysE", "KRY_Lrp0CHs", "gikuP_vv_cc", "gk1v0I-AU8k", "1bl701dCbpo", "Ylik9HJsLlA", "T7oImSYEBdo", "lvSO3syMRAU", "KrlpdsHyTIM", "d0Ci6C44yYc"],
         "Travaux Pratiques": ["-g-dXug1PZQ", "VBAoxqZ2YBo", "T5tltq3_7BI", "r5OqVrBpxuI", "XT-E6v3gPlM", "chMX5NroGvk", "bX_9f112k8g", "PuwGm11bxtg"],
@@ -79,17 +82,64 @@ const coursesData = {
     }
 };
 
-// Database des Liens PDF par Trimestre / Chapitre
+// Database des Liens PDF par Trimestre / Chapitre / Matière
 const pdfResources = {
-    "Algo & Programmation": {
-        "Trimestre 1": { cours: "https://drive.google.com/link_cours_t1", series: "https://drive.google.com/link_series_t1", devoirs: "https://drive.google.com/link_devoirs_t1" },
-        "Trimestre 2": { cours: "https://drive.google.com/link_cours_t2", series: "https://drive.google.com/link_series_t2", devoirs: "https://drive.google.com/link_devoirs_t2" },
-        "Trimestre 3": { cours: "https://drive.google.com/link_cours_t3", series: "https://drive.google.com/link_series_t3", devoirs: "https://drive.google.com/link_devoirs_t3" }
-    },
-    "Mathématiques": {
-        "Trimestre 1": { cours: "#", series: "#", devoirs: "#" },
-        "Trimestre 2": { cours: "#", series: "#", devoirs: "#" },
-        "Trimestre 3": { cours: "#", series: "#", devoirs: "#" }
+    "STI (Mr Omar)": {
+        "Notion BD & SGBD": {
+            cours: "https://drive.google.com/drive/folders/1Jnn3hkeTx1DGlgcB-qb4ULlJ37lPWNKu?usp=drive_link",
+            series: "https://drive.google.com/drive/folders/18_WSCvCHVVKsrt7bqXOVz2BCgNn5EsLb?usp=drive_link",
+            devoirs: "https://drive.google.com/drive/folders/1eWslObubH4MFFQf7XUubHN_sBrVIaYGf?usp=drive_link"
+        },
+        "Structure BD": {
+            cours: "https://drive.google.com/drive/folders/1UpUSlod6Gx7HlydtHWcu7dfFAzAxL9wL?usp=drive_link",
+            series: "https://drive.google.com/drive/folders/1oWHKKmiI0MJpg7_ANWBcxDEitWubk3Pm?usp=drive_link",
+            devoirs: "https://drive.google.com/drive/folders/1HIOJrGEYKdQF0YZB7_lpsRFtXjF-oqv2?usp=drive_link"
+        },
+        "LDD": {
+            cours: "https://drive.google.com/drive/folders/153wBKkv0yGozfFYIpy4pHZ8wt90pZ7rS?usp=drive_link",
+            series: "https://drive.google.com/drive/folders/1ktdgkSlNzt4Z8rB50wLORXjnzyVXmiku?usp=drive_link",
+            devoirs: "https://drive.google.com/drive/folders/14ERgItigzaunJNNR97JzwV1eUyJjwR4z?usp=drive_link"
+        },
+        "LMD": {
+            cours: "#",
+            series: "https://drive.google.com/drive/folders/1lHwsYkH3ZluEe4rapvDrRK6ppj1sx97Y?usp=drive_link",
+            devoirs: "https://drive.google.com/drive/folders/1nLGDK5-fvUmtEK9VRbkfP5OeY-ztcqSt?usp=drive_link"
+        },
+        "HTML + CSS": {
+            cours: "#",
+            series: "https://drive.google.com/drive/folders/1Qanx5PqZs4jOuqMEaZOSWbfYEpF5vJme?usp=drive_link",
+            devoirs: "https://drive.google.com/drive/folders/1yQ_kL7sNoGrXt8Z8asQGTUZTTwiXbxN4?usp=drive_link"
+        },
+        "HTML + CSS + JS": {
+            cours: "#",
+            series: "https://drive.google.com/drive/folders/1LNYxgowVHcSQWpNoGY6R24QFGbUzdNof?usp=drive_link",
+            devoirs: "https://drive.google.com/drive/folders/1zRCaN00qqAxTu0kp2oMpwwUUq1KVNmfd?usp=drive_link"
+        },
+        "JS": {
+            cours: "https://drive.google.com/drive/folders/1BdgpOEfQ8MOwwpn7Da73sq1IUP26H3aq?usp=drive_link",
+            series: "https://drive.google.com/drive/folders/1jEnyssOCCBV1mFeVoD_QTsvkt6VgW19n?usp=drive_link",
+            devoirs: "https://drive.google.com/drive/folders/1MiRLCqNb2yIrTWShB8CbgaHAYIcSmAWk?usp=drive_link"
+        },
+        "PHP": {
+            cours: "https://drive.google.com/drive/folders/17UzZtcLb3H9jVybUAiDLC7O8YEJgH5TF?usp=drive_link",
+            series: "https://drive.google.com/drive/folders/1QLE5M2M0TlMlZCm12aMkFHNXR25Le7pl?usp=drive_link",
+            devoirs: "https://drive.google.com/drive/folders/1LxWoEIWJFJ2BdpPgQimd_iseWlrAft8k?usp=drive_link"
+        },
+        "Travaux Théoriques": {
+            cours: "#",
+            series: "https://drive.google.com/drive/folders/1vodU0dVMJP_AvVzj00_5hEYEMH-ANxXv?usp=sharing",
+            devoirs: "https://drive.google.com/drive/folders/178B-Ma9u4VDxxagpqY4SKQTykV7nMiak?usp=drive_link"
+        },
+        "Travaux Pratiques": {
+            cours: "#",
+            series: "https://drive.google.com/drive/folders/1w4siu35z4kjhn8_o0t_-QWgxlB74JWCF?usp=drive_link",
+            devoirs: "https://drive.google.com/drive/folders/1v5kmEeNF6mUpSiFtPyhkzqWraJ2cZ7Kq?usp=drive_link"
+        },
+        "Révision STI": {
+            cours: "#",
+            series: "https://drive.google.com/drive/folders/16yJtNaJLsJkzOyzgFeb16Ffaj7jZVlFk?usp=drive_link",
+            devoirs: "https://drive.google.com/drive/folders/1t8HFMHo9hQa5TA14_Mo5ZCAphQqxhqyt?usp=drive_link"
+        }
     }
 };
 
@@ -122,9 +172,9 @@ function onYouTubeIframeAPIReady() {
         width: '100%',
         videoId: 'K5JXPhnLRgk',
         playerVars: { 
-            'controls': 0,          // Mask controls inside iframe
+            'controls': 0, 
             'modestbranding': 1, 
-            'rel': 0,               // No suggested videos from other channels
+            'rel': 0,
             'showinfo': 0,
             'iv_load_policy': 3,
             'fs': 0,
@@ -246,10 +296,14 @@ function loadVideo(subject, chapter, index, id) {
         coursBtn.href = pdfResources[subject][chapter].cours || "#";
         seriesBtn.href = pdfResources[subject][chapter].series || "#";
         devoirsBtn.href = pdfResources[subject][chapter].devoirs || "#";
+
+        coursBtn.style.display = (pdfResources[subject][chapter].cours !== "#") ? "inline-flex" : "none";
+        seriesBtn.style.display = (pdfResources[subject][chapter].series !== "#") ? "inline-flex" : "none";
+        devoirsBtn.style.display = (pdfResources[subject][chapter].devoirs !== "#") ? "inline-flex" : "none";
     } else {
-        coursBtn.href = "#";
-        seriesBtn.href = "#";
-        devoirsBtn.href = "#";
+        coursBtn.style.display = "none";
+        seriesBtn.style.display = "none";
+        devoirsBtn.style.display = "none";
     }
 }
 
