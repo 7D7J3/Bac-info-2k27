@@ -105,14 +105,18 @@ function onYouTubeIframeAPIReady() {
         height: '100%',
         width: '100%',
         videoId: 'K5JXPhnLRgk',
-        playerVars: { 'controls': 0, 'modestbranding': 1, 'rel': 0, 'disablekb': 1, 'fs': 0 },
+        playerVars: { 
+            'controls': 1,            // خليه 1 للموبايل باش تطلع زرار التشغيل الأصلية إذا لزم
+            'modestbranding': 1, 
+            'rel': 0, 
+            'playsinline': 1          // ⚠️ هذي أهم نقطة باش الفيديو يخدم داخل الصفحة في التليفون وما يحلش Plein écran بالسيف
+        },
         events: { 
             'onReady': () => playerReady = true, 
             'onStateChange': onPlayerStateChange 
         }
     });
 }
-
 function onPlayerStateChange(event) {
     const statusText = document.getElementById('playerStatus');
     if (event.data === YT.PlayerState.PLAYING) {
