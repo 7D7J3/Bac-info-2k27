@@ -79,7 +79,10 @@ const coursesData = {
     }
 };
 
-// Protection Sécurité (Anti Clic-Droit & F12)
+// رابط الـ Google Apps Script الخاص بك
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby4z0sCAHqyVMz29LMQg3BctYCKyUohPGFXr_az8UGQtUGqB1mDoQok4u94G-mbwJsn/exec";
+
+// حماية الصفحة
 document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
 document.addEventListener('keydown', function(e) {
     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || (e.ctrlKey && e.key === 'u')) {
@@ -87,7 +90,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Injection API YouTube
 var tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -95,19 +97,40 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var player;
 var isPlaying = false;
+var playerReady = false;
+let generatedCode = "";
 
 function onYouTubeIframeAPIReady() {
-    // API Prête
+    player = new YT.Player('player', {
+        height: '100%',
+        width: '100%',
+        videoId: 'K5JXPhnLRgk',
+        playerVars: { 'controls': 0, 'modestbranding': 1, 'rel': 0, 'disablekb': 1, 'fs': 0 },
+        events: { 
+            'onReady': () => playerReady = true, 
+            'onStateChange': onPlayerStateChange 
+        }
+    });
 }
 
-// Construction du Menu
+function onPlayerStateChange(event) {
+    const statusText = document.getElementById('playerStatus');
+    if (event.data === YT.PlayerState.PLAYING) {
+        isPlaying = true;
+        if (statusText) statusText.innerText = "▶ Lecture en cours...";
+    } else if (event.data === YT.PlayerState.PAUSED) {
+        isPlaying = false;
+        if (statusText) statusText.innerText = "⏸ En pause";
+    }
+}
+
+// بناء القائمة الجانبية
 const treeContainer = document.getElementById('subjectTree');
 if (treeContainer) {
     treeContainer.innerHTML = '';
     for (let subject in coursesData) {
         let subjectItem = document.createElement('div');
         subjectItem.className = 'accordion-item';
-        
         let title = document.createElement('div');
         title.className = 'accordion-title';
         title.innerHTML = `<span>${subject}</span> <span>▼</span>`;
@@ -129,9 +152,7 @@ if (treeContainer) {
                 let link = document.createElement('a');
                 link.className = 'video-link';
                 link.innerText = `▶ Séance ${index + 1}`;
-                link.onclick = function() {
-                    loadVideo(subject, chapter, index + 1, videoId);
-                };
+                link.onclick = function() { loadVideo(subject, chapter, index + 1, videoId); };
                 content.appendChild(link);
             });
         }
@@ -141,88 +162,95 @@ if (treeContainer) {
     }
 }
 
-// Chargement Vidéo Strictement Bloqué
 function loadVideo(subject, chapter, index, id) {
     const videoTitle = document.getElementById('videoTitle');
-    if (videoTitle) {
-        videoTitle.innerText = `${subject} ➔ ${chapter} (Séance ${index})`;
-    }
-
-    if (player && player.loadVideoById) {
-        player.loadVideoById(id);
-    } else {
-        player = new YT.Player('mainIframe', {
-            videoId: id,
-            playerVars: {
-                'autoplay': 1,
-                'controls': 0,          // Masquer la barre YouTube natif
-                'modestbranding': 1,    // Masquer le logo
-                'rel': 0,               // Pas de suggestions
-                'disablekb': 1,         // Pas de contrôle clavier
-                'fs': 0                 // Désactiver plein écran YouTube
-            },
-            events: {
-                'onStateChange': onPlayerStateChange
-            }
-        });
-    }
+    if (videoTitle) videoTitle.innerText = `${subject} ➔ ${chapter} (Séance ${index})`;
+    if (playerReady && player && player.loadVideoById) player.loadVideoById(id);
 }
 
-function onPlayerStateChange(event) {
-    const statusText = document.getElementById('playerStatus');
-    if (event.data == YT.PlayerState.PLAYING) {
-        isPlaying = true;
-        if(statusText) statusText.innerText = "▶ Lecture en cours...";
-    } else if (event.data == YT.PlayerState.PAUSED) {
-        isPlaying = false;
-        if(statusText) statusText.innerText = "⏸ En pause";
-    }
-}
-
-// Handlers Play/Pause
 document.addEventListener('DOMContentLoaded', function() {
     const playBtn = document.getElementById('playPauseBtn');
+    const rewindBtn = document.getElementById('rewindBtn');
+    const forwardBtn = document.getElementById('forwardBtn');
     const overlay = document.getElementById('videoOverlay');
 
     function togglePlay() {
-        if (player && player.playVideo) {
-            if (isPlaying) {
-                player.pauseVideo();
-            } else {
-                player.playVideo();
-            }
+        if (playerReady && player) {
+            if (isPlaying) player.pauseVideo();
+            else player.playVideo();
+        }
+    }
+
+    function seekRelative(seconds) {
+        if (playerReady && player && player.getCurrentTime) {
+            player.seekTo(player.getCurrentTime() + seconds, true);
         }
     }
 
     if (playBtn) playBtn.addEventListener('click', togglePlay);
     if (overlay) overlay.addEventListener('click', togglePlay);
+    if (rewindBtn) rewindBtn.addEventListener('click', () => seekRelative(-10));
+    if (forwardBtn) forwardBtn.addEventListener('click', () => seekRelative(10));
 
-    // Formulaire d'accès
+    // Gestion du Formulaire d'envoi du code par e-mail
     const loginForm = document.getElementById('loginForm');
+    const codeForm = document.getElementById('codeForm');
+    const userEmailInput = document.getElementById('userEmail');
+    const verificationCodeInput = document.getElementById('verificationCodeInput');
+    const codeInfoText = document.getElementById('codeInfoText');
+
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            localStorage.setItem('bacInfoAccessGranted', 'true');
-            let modal = document.getElementById('loginModal');
-            let status = document.getElementById('accessStatus');
-            if (modal) modal.style.display = 'none';
-            if (status) {
-                status.className = 'status-unlocked';
-                status.innerText = '🔓 Accès Autorisé';
+            const email = userEmailInput.value.trim();
+            
+            // توليد كود فريد
+            generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            // إرسال الكود للـ Script
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, code: generatedCode })
+            }).then(() => {
+                loginForm.style.display = 'none';
+                codeForm.style.display = 'block';
+                codeInfoText.innerText = `Un code a été envoyé à ${email}. Vérifiez votre boîte mail.`;
+            }).catch(err => {
+                alert("Erreur lors de l'envoi du code. Réessayez.");
+            });
+        });
+    }
+
+    if (codeForm) {
+        codeForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const enteredCode = verificationCodeInput.value.trim();
+
+            if (enteredCode === generatedCode) {
+                localStorage.setItem('bacInfoAccessGranted', 'true');
+                unlockPlatform();
+            } else {
+                alert("Code incorrect ! Veuillez réessayer.");
             }
         });
     }
 
     if (localStorage.getItem('bacInfoAccessGranted') === 'true') {
-        let modal = document.getElementById('loginModal');
-        let status = document.getElementById('accessStatus');
-        if (modal) modal.style.display = 'none';
-        if (status) {
-            status.className = 'status-unlocked';
-            status.innerText = '🔓 Accès Autorisé';
-        }
+        unlockPlatform();
     }
 });
+
+function unlockPlatform() {
+    let modal = document.getElementById('loginModal');
+    let status = document.getElementById('accessStatus');
+    if (modal) modal.style.display = 'none';
+    if (status) {
+        status.className = 'status-unlocked';
+        status.innerText = '🔓 Accès Autorisé';
+    }
+}
 
 function notifyPdfDownload() {
     alert("Téléchargement du support PDF en cours...");
