@@ -21,7 +21,6 @@ body {
     min-height: 100vh;
 }
 
-/* Navbar */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -51,7 +50,6 @@ body {
     font-size: 0.85rem;
 }
 
-/* Main Container Layout */
 .main-container {
     display: grid;
     grid-template-columns: 320px 1fr;
@@ -67,13 +65,11 @@ body {
     }
 }
 
-/* Sidebar Accordion */
 .sidebar {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 1.5rem;
-    height: auto;
     max-height: calc(100vh - 120px);
     overflow-y: auto;
 }
@@ -136,7 +132,6 @@ body {
     color: var(--text-primary);
 }
 
-/* Content Area & Video Player */
 .content-area {
     display: flex;
     flex-direction: column;
@@ -164,7 +159,7 @@ body {
     background: #000;
 }
 
-.video-container iframe {
+.video-container iframe, .video-container #player {
     position: absolute;
     top: 0;
     left: 0;
@@ -172,7 +167,6 @@ body {
     height: 100%;
 }
 
-/* Shield Overlay Transparent */
 .video-overlay {
     position: absolute;
     top: 0;
@@ -184,26 +178,27 @@ body {
     cursor: pointer;
 }
 
-/* Controls Box */
 .custom-controls {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
     background: rgba(255, 255, 255, 0.05);
     padding: 10px 15px;
     border-radius: 10px;
     margin-top: 15px;
     border: 1px solid var(--border);
+    flex-wrap: wrap;
 }
 
 .btn-ctrl {
     background: var(--accent);
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 8px 14px;
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
+    transition: 0.2s;
 }
 
 .btn-ctrl:hover {
@@ -213,6 +208,7 @@ body {
 .ctrl-status {
     font-size: 0.85rem;
     color: var(--text-muted);
+    margin-left: auto;
 }
 
 .actions-bar {
@@ -235,7 +231,6 @@ body {
     background: #059669;
 }
 
-/* Modal Lock */
 .modal {
     position: fixed;
     top: 0;
@@ -259,6 +254,12 @@ body {
     text-align: center;
 }
 
+.modal-content p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
+
 .modal-content input {
     width: 100%;
     padding: 10px;
@@ -278,4 +279,5 @@ body {
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
+    margin-top: 10px;
 }
