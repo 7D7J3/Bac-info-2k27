@@ -185,9 +185,23 @@ body {
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 1.5rem;
-    height: calc(100vh - 120px);
-    overflow-y: auto;
+    height: auto; /* نحينا التحديد القديم متاع الطول باش تاخد راحتها */
+    max-height: calc(100vh - 120px);
+    overflow-y: auto; /* باش تعمل Scroll نظيف */
 }
+
+.accordion-content {
+    max-height: none; /* نحينا التقييد القديم باش الشباتر الكل تظهر مرة وحدة */
+    display: none; /* مخفية في العادة */
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0 1rem;
+}
+
+.accordion-content.active {
+    display: block; /* تظهر كاملة كيف تكليكي عليها من غير ما تتقص */
+    padding: 0.8rem 1rem 1rem 1rem;
+}
+
 
 .sidebar h3 {
     font-size: 1.1rem;
