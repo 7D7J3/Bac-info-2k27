@@ -79,15 +79,28 @@ const coursesData = {
     }
 };
 
+// Database des Liens PDF par Trimestre / Chapitre
+const pdfResources = {
+    "Algo & Programmation": {
+        "Trimestre 1": { cours: "https://drive.google.com/link_cours_t1", series: "https://drive.google.com/link_series_t1", devoirs: "https://drive.google.com/link_devoirs_t1" },
+        "Trimestre 2": { cours: "https://drive.google.com/link_cours_t2", series: "https://drive.google.com/link_series_t2", devoirs: "https://drive.google.com/link_devoirs_t2" },
+        "Trimestre 3": { cours: "https://drive.google.com/link_cours_t3", series: "https://drive.google.com/link_series_t3", devoirs: "https://drive.google.com/link_devoirs_t3" }
+    },
+    "Mathématiques": {
+        "Trimestre 1": { cours: "#", series: "#", devoirs: "#" },
+        "Trimestre 2": { cours: "#", series: "#", devoirs: "#" },
+        "Trimestre 3": { cours: "#", series: "#", devoirs: "#" }
+    }
+};
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby5-gqZzofu4uowiAO9XVTFqnB5JzQNIEUdZ_DOq0hDippOegkGM-fv9BvsAknyFXg0/exec";
 
-// Gestion de la progression (localStorage)
 let completedVideos = JSON.parse(localStorage.getItem('bacInfoCompletedVideos')) || [];
 let currentVideoId = null;
 
-// حماية الصفحة
-document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-document.addEventListener('keydown', function(e) {
+// Lock DevTools & Right Click Protection
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || (e.ctrlKey && e.key === 'u')) {
         e.preventDefault();
     }
@@ -103,17 +116,18 @@ var isPlaying = false;
 var playerReady = false;
 let generatedCode = "";
 
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '100%',
         width: '100%',
         videoId: 'K5JXPhnLRgk',
         playerVars: { 
-            'controls': 1, 
+            'controls': 0,          // Mask controls inside iframe
             'modestbranding': 1, 
-            'rel': 0, 
+            'rel': 0,               // No suggested videos from other channels
+            'showinfo': 0,
+            'iv_load_policy': 3,
+            'fs': 0,
             'playsinline': 1 
         },
         events: { 
@@ -138,7 +152,6 @@ function onPlayerStateChange(event) {
     }
 }
 
-// حساب و تحديث شريط التقدم Global
 function updateProgressBar() {
     let totalVideos = 0;
     for (let s in coursesData) {
@@ -162,7 +175,6 @@ function markVideoAsCompleted(id) {
         completedVideos.push(id);
         localStorage.setItem('bacInfoCompletedVideos', JSON.stringify(completedVideos));
         
-        // Update Link styling
         const link = document.querySelector(`[data-video-id="${id}"]`);
         if (link) {
             link.classList.add('completed');
@@ -172,7 +184,7 @@ function markVideoAsCompleted(id) {
     }
 }
 
-// بناء القائمة الجانبية
+// Build Sidebar Menu
 const treeContainer = document.getElementById('subjectTree');
 if (treeContainer) {
     treeContainer.innerHTML = '';
@@ -207,7 +219,7 @@ if (treeContainer) {
                 
                 link.onclick = function() { 
                     loadVideo(subject, chapter, index + 1, videoId); 
-                    markVideoAsCompleted(videoId); // Mark as completed when clicked/watched
+                    markVideoAsCompleted(videoId);
                 };
                 content.appendChild(link);
             });
@@ -224,6 +236,21 @@ function loadVideo(subject, chapter, index, id) {
     const videoTitle = document.getElementById('videoTitle');
     if (videoTitle) videoTitle.innerText = `${subject} ➔ ${chapter} (Séance ${index})`;
     if (playerReady && player && player.loadVideoById) player.loadVideoById(id);
+
+    // Update PDF links dynamically
+    const coursBtn = document.getElementById('pdfCoursBtn');
+    const seriesBtn = document.getElementById('pdfSeriesBtn');
+    const devoirsBtn = document.getElementById('pdfDevoirsBtn');
+
+    if (pdfResources[subject] && pdfResources[subject][chapter]) {
+        coursBtn.href = pdfResources[subject][chapter].cours || "#";
+        seriesBtn.href = pdfResources[subject][chapter].series || "#";
+        devoirsBtn.href = pdfResources[subject][chapter].devoirs || "#";
+    } else {
+        coursBtn.href = "#";
+        seriesBtn.href = "#";
+        devoirsBtn.href = "#";
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -235,16 +262,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoContainer = document.querySelector('.video-container');
     const overlay = document.getElementById('videoOverlay');
 
-    if (isMobile && overlay) {
-        overlay.style.pointerEvents = 'none';
-    }
-
     fullscreenBtn.id = 'fullscreenBtn';
     fullscreenBtn.className = 'btn-ctrl';
     fullscreenBtn.innerText = '⛶ Plein Écran';
-    if (controlsBar) {
-        controlsBar.appendChild(fullscreenBtn);
-    }
+    if (controlsBar) controlsBar.appendChild(fullscreenBtn);
 
     function togglePlay() {
         if (playerReady && player) {
@@ -261,19 +282,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function toggleFullscreen() {
         if (!document.fullscreenElement) {
-            if (videoContainer.requestFullscreen) {
-                videoContainer.requestFullscreen();
-            } else if (videoContainer.webkitRequestFullscreen) {
-                videoContainer.webkitRequestFullscreen();
-            } else if (videoContainer.msRequestFullscreen) {
-                videoContainer.msRequestFullscreen();
-            }
+            if (videoContainer.requestFullscreen) videoContainer.requestFullscreen();
+            else if (videoContainer.webkitRequestFullscreen) videoContainer.webkitRequestFullscreen();
+            else if (videoContainer.msRequestFullscreen) videoContainer.msRequestFullscreen();
         } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            }
+            if (document.exitFullscreen) document.exitFullscreen();
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
         }
     }
 
@@ -283,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (forwardBtn) forwardBtn.addEventListener('click', () => seekRelative(10));
     if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
 
-    // Demande d'accès
+    // Access Modal
     const loginForm = document.getElementById('loginForm');
     const codeForm = document.getElementById('codeForm');
     const userNameInput = document.getElementById('userName');
@@ -317,9 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (codeForm) {
         codeForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const enteredCode = verificationCodeInput.value.trim();
-
-            if (enteredCode === generatedCode) {
+            if (verificationCodeInput.value.trim() === generatedCode) {
                 localStorage.setItem('bacInfoAccessGranted', 'true');
                 unlockPlatform();
             } else {
@@ -341,8 +353,4 @@ function unlockPlatform() {
         status.className = 'status-unlocked';
         status.innerText = '🔓 Accès Autorisé';
     }
-}
-
-function notifyPdfDownload() {
-    alert("Téléchargement du support PDF en cours...");
 }
