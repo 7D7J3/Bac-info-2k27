@@ -9,15 +9,24 @@
 </head>
 <body>
 
-    <!-- Modal d'accès -->
+    <!-- Modal d'accès & Vérification par Code -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <h2>🔒 Accès à la Plateforme</h2>
-            <p>Veuillez entrer vos informations pour accéder aux cours.</p>
+            <h2>🔒 Accès Sécurisé</h2>
+            
+            <!-- Étape 1 : Demande d'email -->
             <form id="loginForm">
-                <input type="text" placeholder="Nom & Prénom" required>
-                <input type="email" placeholder="Adresse Email" required>
-                <button type="submit" class="btn-submit">Valider & Accéder</button>
+                <p>Entrez vos coordonnées pour recevoir votre code d'accès unique par e-mail.</p>
+                <input type="text" id="userName" placeholder="Nom & Prénom" required>
+                <input type="email" id="userEmail" placeholder="Votre Adresse Email" required>
+                <button type="submit" class="btn-submit">Envoyer le code ✉️</button>
+            </form>
+
+            <!-- Étape 2 : Validation du Code -->
+            <form id="codeForm" style="display: none;">
+                <p id="codeInfoText" style="color: #10b981; font-size: 0.9rem; margin-bottom: 10px;"></p>
+                <input type="text" id="verificationCodeInput" placeholder="Entrez le code à 6 chiffres" required>
+                <button type="submit" class="btn-submit">Valider le code 🔓</button>
             </form>
         </div>
     </div>
@@ -34,9 +43,7 @@
         <!-- Sidebar : Navigation par Matière -->
         <aside class="sidebar">
             <h3>📂 Programme Bac Info</h3>
-            <div id="subjectTree" class="tree-menu">
-                <!-- Généré dynamiquement par script.js -->
-            </div>
+            <div id="subjectTree" class="tree-menu"></div>
         </aside>
 
         <!-- Main Content : Lecteur Vidéo & Protection Overlay -->
@@ -45,16 +52,16 @@
                 <h2 id="videoTitle">Sélectionnez une vidéo dans le menu à gauche 👈</h2>
                 
                 <div class="video-container">
-                    <!-- Iframe YouTube avec Player API -->
-                    <iframe id="mainIframe" src="" frameborder="0" allow="autoplay"></iframe>
-                    <!-- Shield transparent : Bloque 100% les clics vers YouTube -->
+                    <div id="player"></div>
                     <div class="video-overlay" id="videoOverlay"></div>
                 </div>
 
                 <!-- Custom Controls Bar -->
                 <div class="custom-controls">
+                    <button id="rewindBtn" class="btn-ctrl">⏪ -10s</button>
                     <button id="playPauseBtn" class="btn-ctrl">▶ Play / Pause</button>
-                    <span id="playerStatus" class="ctrl-status">Cliquez sur Play pour lancer</span>
+                    <button id="forwardBtn" class="btn-ctrl">⏩ +10s</button>
+                    <span id="playerStatus" class="ctrl-status">Choisissez une vidéo pour commencer</span>
                 </div>
 
                 <div class="actions-bar">
