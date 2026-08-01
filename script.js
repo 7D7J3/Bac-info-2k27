@@ -100,16 +100,18 @@ var isPlaying = false;
 var playerReady = false;
 let generatedCode = "";
 
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '100%',
         width: '100%',
         videoId: 'K5JXPhnLRgk',
         playerVars: { 
-            'controls': 1,            // خليه 1 للموبايل باش تطلع زرار التشغيل الأصلية إذا لزم
+            'controls': 1, 
             'modestbranding': 1, 
             'rel': 0, 
-            'playsinline': 1          // ⚠️ هذي أهم نقطة باش الفيديو يخدم داخل الصفحة في التليفون وما يحلش Plein écran بالسيف
+            'playsinline': 1 
         },
         events: { 
             'onReady': () => playerReady = true, 
@@ -117,6 +119,7 @@ function onYouTubeIframeAPIReady() {
         }
     });
 }
+
 function onPlayerStateChange(event) {
     const statusText = document.getElementById('playerStatus');
     if (event.data === YT.PlayerState.PLAYING) {
@@ -176,7 +179,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const playBtn = document.getElementById('playPauseBtn');
     const rewindBtn = document.getElementById('rewindBtn');
     const forwardBtn = document.getElementById('forwardBtn');
+    const fullscreenBtn = document.createElement('button');
+    const controlsBar = document.querySelector('.custom-controls');
+    const videoContainer = document.querySelector('.video-container');
     const overlay = document.getElementById('videoOverlay');
+
+    if (isMobile && overlay) {
+        overlay.style.pointerEvents = 'none';
+    }
+
+    fullscreenBtn.id = 'fullscreenBtn';
+    fullscreenBtn.className = 'btn-ctrl';
+    fullscreenBtn.innerText = '⛶ Plein Écran';
+    if (controlsBar) {
+        controlsBar.appendChild(fullscreenBtn);
+    }
 
     function togglePlay() {
         if (playerReady && player) {
@@ -191,14 +208,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            if (videoContainer.requestFullscreen) {
+                videoContainer.requestFullscreen();
+            } else if (videoContainer.webkitRequestFullscreen) {
+                videoContainer.webkitRequestFullscreen();
+            } else if (videoContainer.msRequestFullscreen) {
+                videoContainer.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+    }
+
     if (playBtn) playBtn.addEventListener('click', togglePlay);
     if (overlay) overlay.addEventListener('click', togglePlay);
     if (rewindBtn) rewindBtn.addEventListener('click', () => seekRelative(-10));
     if (forwardBtn) forwardBtn.addEventListener('click', () => seekRelative(10));
+    if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
 
-    // Gestion du Formulaire d'envoi du code par e-mail
+    // Gestion de la demande d'accès
     const loginForm = document.getElementById('loginForm');
     const codeForm = document.getElementById('codeForm');
+    const userNameInput = document.getElementById('userName');
     const userEmailInput = document.getElementById('userEmail');
     const verificationCodeInput = document.getElementById('verificationCodeInput');
     const codeInfoText = document.getElementById('codeInfoText');
@@ -206,23 +243,22 @@ document.addEventListener('DOMContentLoaded', function() {
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            const name = userNameInput.value.trim();
             const email = userEmailInput.value.trim();
             
-            // توليد كود فريد
             generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
             
-            // إرسال الكود للـ Script
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email, code: generatedCode })
+                body: JSON.stringify({ name: name, email: email, code: generatedCode })
             }).then(() => {
                 loginForm.style.display = 'none';
                 codeForm.style.display = 'block';
-                codeInfoText.innerText = `Un code a été envoyé à ${email}. Vérifiez votre boîte mail.`;
+                codeInfoText.innerText = `تم إرسال طلبك للإدارة. تواصل مع المسؤول للحصول على كود الدخول.`;
             }).catch(err => {
-                alert("Erreur lors de l'envoi du code. Réessayez.");
+                alert("Erreur lors de l'envoi. Veuillez réessayer.");
             });
         });
     }
@@ -236,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('bacInfoAccessGranted', 'true');
                 unlockPlatform();
             } else {
-                alert("Code incorrect ! Veuillez réessayer.");
+                alert("Code incorrect ! Demandez le bon code à l'administrateur.");
             }
         });
     }
