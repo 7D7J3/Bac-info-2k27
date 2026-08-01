@@ -80,7 +80,7 @@ const coursesData = {
 };
 
 // رابط الـ Google Apps Script الخاص بك
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby4z0sCAHqyVMz29LMQg3BctYCKyUohPGFXr_az8UGQtUGqB1mDoQok4u94G-mbwJsn/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby5-gqZzofu4uowiAO9XVTFqnB5JzQNIEUdZ_DOq0hDippOegkGM-fv9BvsAknyFXg0/exec";
 
 // حماية الصفحة
 document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
