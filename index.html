@@ -22,7 +22,7 @@
                 <button type="submit" class="btn-submit">Demander le code ✉️</button>
             </form>
 
-            <!-- Étape 2 : Validation du Code reçu de l'admin -->
+            <!-- Étape 2 : Validation du Code reçu -->
             <form id="codeForm" style="display: none;">
                 <p id="codeInfoText" style="color: #10b981; font-size: 0.9rem; margin-bottom: 10px;"></p>
                 <input type="text" id="verificationCodeInput" placeholder="Entrez le code reçu" required>
@@ -40,7 +40,7 @@
     <!-- App Layout -->
     <div class="main-container">
         
-        <!-- Sidebar : Navigation par Matière & Suivi de Progression -->
+        <!-- Sidebar : Navigation & Suivi de Progression -->
         <aside class="sidebar">
             <h3>📂 Programme Bac Info</h3>
             
@@ -58,14 +58,15 @@
             <div id="subjectTree" class="tree-menu"></div>
         </aside>
 
-        <!-- Main Content : Lecteur Vidéo & Protection Overlay -->
+        <!-- Main Content : Lecteur Vidéo Protected & Supports PDF -->
         <main class="content-area">
             <div class="video-player-card">
                 <h2 id="videoTitle">Sélectionnez une vidéo dans le menu à gauche 👈</h2>
                 
+                <!-- Protected Video Container -->
                 <div class="video-container">
-                   <div id="player"></div>
-                   <div class="video-overlay" id="videoOverlay"></div>
+                    <div id="player"></div>
+                    <div class="video-overlay" id="videoOverlay" title="Cliquez pour Play/Pause"></div>
                 </div>
 
                 <!-- Custom Controls Bar -->
@@ -76,9 +77,17 @@
                     <span id="playerStatus" class="ctrl-status">Choisissez une vidéo pour commencer</span>
                 </div>
 
-                <div class="actions-bar">
-                    <button class="btn-pdf" id="downloadPdfBtn" onclick="notifyPdfDownload()">📄 Télécharger Support PDF</button>
+                <!-- Section Supports PDF du Trimestre -->
+                <div class="pdf-section">
+                    <h3>📚 Documents & Supports PDF du Trimestre</h3>
+                    <p class="pdf-subtitle">Téléchargez les cours, séries et devoirs corrigés pour ce chapitre :</p>
+                    <div class="pdf-buttons-grid">
+                        <a id="btnPdfCours" href="#" target="_blank" class="btn-pdf-item btn-cours">📖 Cours PDF</a>
+                        <a id="btnPdfSeries" href="#" target="_blank" class="btn-pdf-item btn-series">📝 Séries d'exercices</a>
+                        <a id="btnPdfDevoirs" href="#" target="_blank" class="btn-pdf-item btn-devoirs">📑 Devoirs + Correction</a>
+                    </div>
                 </div>
+
             </div>
         </main>
 
