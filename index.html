@@ -14,18 +14,18 @@
         <div class="modal-content">
             <h2>🔒 Accès Sécurisé</h2>
             
-            <!-- Étape 1 : Demande d'email -->
+            <!-- Étape 1 : Demande d'email et nom -->
             <form id="loginForm">
-                <p>Entrez vos coordonnées pour recevoir votre code d'accès unique par e-mail.</p>
+                <p>Entrez vos coordonnées pour demander votre code d'accès à l'administrateur.</p>
                 <input type="text" id="userName" placeholder="Nom & Prénom" required>
                 <input type="email" id="userEmail" placeholder="Votre Adresse Email" required>
-                <button type="submit" class="btn-submit">Envoyer le code ✉️</button>
+                <button type="submit" class="btn-submit">Demander le code ✉️</button>
             </form>
 
-            <!-- Étape 2 : Validation du Code -->
+            <!-- Étape 2 : Validation du Code reçu de l'admin -->
             <form id="codeForm" style="display: none;">
                 <p id="codeInfoText" style="color: #10b981; font-size: 0.9rem; margin-bottom: 10px;"></p>
-                <input type="text" id="verificationCodeInput" placeholder="Entrez le code à 6 chiffres" required>
+                <input type="text" id="verificationCodeInput" placeholder="Entrez le code reçu" required>
                 <button type="submit" class="btn-submit">Valider le code 🔓</button>
             </form>
         </div>
