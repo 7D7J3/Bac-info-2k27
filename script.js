@@ -79,8 +79,11 @@ const coursesData = {
     }
 };
 
-// رابط الـ Google Apps Script الخاص بك
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby5-gqZzofu4uowiAO9XVTFqnB5JzQNIEUdZ_DOq0hDippOegkGM-fv9BvsAknyFXg0/exec";
+
+// Gestion de la progression (localStorage)
+let completedVideos = JSON.parse(localStorage.getItem('bacInfoCompletedVideos')) || [];
+let currentVideoId = null;
 
 // حماية الصفحة
 document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
@@ -128,6 +131,44 @@ function onPlayerStateChange(event) {
     } else if (event.data === YT.PlayerState.PAUSED) {
         isPlaying = false;
         if (statusText) statusText.innerText = "⏸ En pause";
+    } else if (event.data === YT.PlayerState.ENDED) {
+        if (currentVideoId) {
+            markVideoAsCompleted(currentVideoId);
+        }
+    }
+}
+
+// حساب و تحديث شريط التقدم Global
+function updateProgressBar() {
+    let totalVideos = 0;
+    for (let s in coursesData) {
+        for (let c in coursesData[s]) {
+            totalVideos += coursesData[s][c].length;
+        }
+    }
+
+    const completedCount = completedVideos.length;
+    const percentage = Math.round((completedCount / totalVideos) * 100);
+
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    if (progressBar) progressBar.style.width = percentage + '%';
+    if (progressText) progressText.innerText = percentage + '% (' + completedCount + '/' + totalVideos + ')';
+}
+
+function markVideoAsCompleted(id) {
+    if (!completedVideos.includes(id)) {
+        completedVideos.push(id);
+        localStorage.setItem('bacInfoCompletedVideos', JSON.stringify(completedVideos));
+        
+        // Update Link styling
+        const link = document.querySelector(`[data-video-id="${id}"]`);
+        if (link) {
+            link.classList.add('completed');
+        }
+
+        updateProgressBar();
     }
 }
 
@@ -158,8 +199,16 @@ if (treeContainer) {
             coursesData[subject][chapter].forEach(function(videoId, index) {
                 let link = document.createElement('a');
                 link.className = 'video-link';
-                link.innerText = `▶ Séance ${index + 1}`;
-                link.onclick = function() { loadVideo(subject, chapter, index + 1, videoId); };
+                if (completedVideos.includes(videoId)) {
+                    link.classList.add('completed');
+                }
+                link.setAttribute('data-video-id', videoId);
+                link.innerHTML = `<span>▶ Séance ${index + 1}</span>`;
+                
+                link.onclick = function() { 
+                    loadVideo(subject, chapter, index + 1, videoId); 
+                    markVideoAsCompleted(videoId); // Mark as completed when clicked/watched
+                };
                 content.appendChild(link);
             });
         }
@@ -167,9 +216,11 @@ if (treeContainer) {
         subjectItem.appendChild(content);
         treeContainer.appendChild(subjectItem);
     }
+    updateProgressBar();
 }
 
 function loadVideo(subject, chapter, index, id) {
+    currentVideoId = id;
     const videoTitle = document.getElementById('videoTitle');
     if (videoTitle) videoTitle.innerText = `${subject} ➔ ${chapter} (Séance ${index})`;
     if (playerReady && player && player.loadVideoById) player.loadVideoById(id);
@@ -232,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (forwardBtn) forwardBtn.addEventListener('click', () => seekRelative(10));
     if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
 
-    // Gestion de la demande d'accès
+    // Demande d'accès
     const loginForm = document.getElementById('loginForm');
     const codeForm = document.getElementById('codeForm');
     const userNameInput = document.getElementById('userName');
