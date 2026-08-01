@@ -79,20 +79,29 @@ const coursesData = {
     }
 };
 
-// Security Protections (Bloquer le Clic Droit & Inspecter)
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-});
-
+// Protection Sécurité (Anti Clic-Droit & F12)
+document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
 document.addEventListener('keydown', function(e) {
     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || (e.ctrlKey && e.key === 'u')) {
         e.preventDefault();
     }
 });
 
-// Build Sidebar Menu
-const treeContainer = document.getElementById('subjectTree');
+// Injection API YouTube
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
+var player;
+var isPlaying = false;
+
+function onYouTubeIframeAPIReady() {
+    // API Prête
+}
+
+// Construction du Menu
+const treeContainer = document.getElementById('subjectTree');
 if (treeContainer) {
     treeContainer.innerHTML = '';
     for (let subject in coursesData) {
@@ -104,9 +113,7 @@ if (treeContainer) {
         title.innerHTML = `<span>${subject}</span> <span>▼</span>`;
         title.onclick = function() {
             let content = title.nextElementSibling;
-            if (content) {
-                content.classList.toggle('active');
-            }
+            if (content) content.classList.toggle('active');
         };
 
         let content = document.createElement('div');
@@ -128,44 +135,84 @@ if (treeContainer) {
                 content.appendChild(link);
             });
         }
-
         subjectItem.appendChild(title);
         subjectItem.appendChild(content);
         treeContainer.appendChild(subjectItem);
     }
 }
 
-// Load Video - Strict Embedded Player Only (Aucun bouton externe)
+// Chargement Vidéo Strictement Bloqué
 function loadVideo(subject, chapter, index, id) {
     const videoTitle = document.getElementById('videoTitle');
-    const iframe = document.getElementById('mainIframe');
-    
     if (videoTitle) {
         videoTitle.innerText = `${subject} ➔ ${chapter} (Séance ${index})`;
     }
-    
-    if (iframe) {
-        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&controls=1&iv_load_policy=3&fs=1`;
-        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-    }
 
-    // Supprimer le bouton YouTube s'il existe
-    let externalBtn = document.getElementById('directYoutubeBtn');
-    if (externalBtn) {
-        externalBtn.remove();
+    if (player && player.loadVideoById) {
+        player.loadVideoById(id);
+    } else {
+        player = new YT.Player('mainIframe', {
+            videoId: id,
+            playerVars: {
+                'autoplay': 1,
+                'controls': 0,          // Masquer la barre YouTube natif
+                'modestbranding': 1,    // Masquer le logo
+                'rel': 0,               // Pas de suggestions
+                'disablekb': 1,         // Pas de contrôle clavier
+                'fs': 0                 // Désactiver plein écran YouTube
+            },
+            events: {
+                'onStateChange': onPlayerStateChange
+            }
+        });
     }
 }
 
-// Handle Form Submission & Unlock Access
-const loginForm = document.getElementById('loginForm');
-if (loginForm) {
-    loginForm.addEventListener('submit', function() {
-        localStorage.setItem('bacInfoAccessGranted', 'true');
-    });
+function onPlayerStateChange(event) {
+    const statusText = document.getElementById('playerStatus');
+    if (event.data == YT.PlayerState.PLAYING) {
+        isPlaying = true;
+        if(statusText) statusText.innerText = "▶ Lecture en cours...";
+    } else if (event.data == YT.PlayerState.PAUSED) {
+        isPlaying = false;
+        if(statusText) statusText.innerText = "⏸ En pause";
+    }
 }
 
-// Check Access on Page Load
-window.addEventListener('DOMContentLoaded', function() {
+// Handlers Play/Pause
+document.addEventListener('DOMContentLoaded', function() {
+    const playBtn = document.getElementById('playPauseBtn');
+    const overlay = document.getElementById('videoOverlay');
+
+    function togglePlay() {
+        if (player && player.playVideo) {
+            if (isPlaying) {
+                player.pauseVideo();
+            } else {
+                player.playVideo();
+            }
+        }
+    }
+
+    if (playBtn) playBtn.addEventListener('click', togglePlay);
+    if (overlay) overlay.addEventListener('click', togglePlay);
+
+    // Formulaire d'accès
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            localStorage.setItem('bacInfoAccessGranted', 'true');
+            let modal = document.getElementById('loginModal');
+            let status = document.getElementById('accessStatus');
+            if (modal) modal.style.display = 'none';
+            if (status) {
+                status.className = 'status-unlocked';
+                status.innerText = '🔓 Accès Autorisé';
+            }
+        });
+    }
+
     if (localStorage.getItem('bacInfoAccessGranted') === 'true') {
         let modal = document.getElementById('loginModal');
         let status = document.getElementById('accessStatus');
