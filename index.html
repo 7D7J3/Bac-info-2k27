@@ -40,9 +40,21 @@
     <!-- App Layout -->
     <div class="main-container">
         
-        <!-- Sidebar : Navigation par Matière -->
+        <!-- Sidebar : Navigation par Matière & Suivi de Progression -->
         <aside class="sidebar">
             <h3>📂 Programme Bac Info</h3>
+            
+            <!-- Progression Global -->
+            <div class="progress-box">
+                <div class="progress-info">
+                    <span>Progression globale</span>
+                    <span id="progressText">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progressBar" class="progress-bar-fill"></div>
+                </div>
+            </div>
+
             <div id="subjectTree" class="tree-menu"></div>
         </aside>
 
