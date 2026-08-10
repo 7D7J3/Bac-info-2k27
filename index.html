@@ -1,18 +1,22 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Learning Portal | IT & Tech</title>
-    <!-- v=2.0 باش نتفاداو الـ Cache متاع GitHub -->
-    <link rel="stylesheet" href="style.css?v=2.0">
+    <title>IT Learning Portal</title>
+    <link rel="stylesheet" href="style.css?v=3.0">
 </head>
 <body>
 
     <!-- Navbar -->
     <header class="navbar">
-        <div class="logo">⚡ IT Platform</div>
-        <div id="accountStatus" class="status-locked">المنصة مقفولة</div>
+        <div class="logo">⚡ TechAcademy</div>
+        <nav class="nav-links">
+            <a href="#" class="nav-item active">Courses</a>
+            <a href="#" class="nav-item">Dashboard</a>
+            <a href="#" class="nav-item">Resources</a>
+        </nav>
+        <div id="accountStatus" class="status-locked">Locked</div>
     </header>
 
     <!-- Main Container -->
@@ -20,15 +24,26 @@
         
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
-            <h3>المحتوى التعليمي</h3>
+            <h3>Course Curriculum</h3>
             
             <div class="accordion-item">
-                <div class="accordion-title">Chapitre 1: Introduction</div>
+                <div class="accordion-title">Module 1: Web Development</div>
                 <div class="accordion-content active">
-                    <div class="chapter-heading">الدروس</div>
-                    <a class="video-link" data-video-id="dQw4w9WgXcQ">
-                        <span>1.1 Introduction IT</span>
-                        <span class="badge-status badge-red" id="badge-dQw4w9WgXcQ">0%</span>
+                    <div class="chapter-heading">Lessons</div>
+                    
+                    <a class="video-link active-link" onclick="loadVideo('w7ejDZ8SWv8', '1.1 HTML & CSS Crash Course', this)">
+                        <span>1.1 HTML & CSS Crash Course</span>
+                        <span class="badge-status badge-red" id="badge-w7ejDZ8SWv8">0%</span>
+                    </a>
+
+                    <a class="video-link" onclick="loadVideo('hdI2bqOjy3c', '1.2 JavaScript Fundamentals', this)">
+                        <span>1.2 JavaScript Fundamentals</span>
+                        <span class="badge-status badge-red" id="badge-hdI2bqOjy3c">0%</span>
+                    </a>
+
+                    <a class="video-link" onclick="loadVideo('32M1al-Y6Ag', '1.3 Python Programming Basics', this)">
+                        <span>1.3 Python Programming Basics</span>
+                        <span class="badge-status badge-red" id="badge-32M1al-Y6Ag">0%</span>
                     </a>
                 </div>
             </div>
@@ -37,17 +52,17 @@
         <!-- Main Content / Player Area -->
         <main class="content-area">
             <div class="video-player-card">
-                <h2 id="videoTitle">مشاهدة الفيديو</h2>
+                <h2 id="videoTitle">1.1 HTML & CSS Crash Course</h2>
                 
                 <!-- Player Box -->
                 <div class="video-container">
                     <div id="player"></div>
                 </div>
 
-                <!-- Single Video Progress Bar -->
+                <!-- Progress Section -->
                 <div class="single-video-progress">
                     <div class="progress-info">
-                        <span>نسبة تقدم الفيديو الحالي:</span>
+                        <span>Current Video Progress:</span>
                         <span id="progressText">0%</span>
                     </div>
                     <div class="progress-bar-bg">
@@ -55,18 +70,18 @@
                     </div>
                 </div>
 
-                <!-- Controls -->
+                <!-- Custom Controls -->
                 <div class="custom-controls">
-                    <button class="btn-ctrl" onclick="playVideo()">تشغيل</button>
-                    <button class="btn-ctrl" onclick="pauseVideo()">إيقاف مؤقت</button>
-                    <span class="ctrl-status" id="videoStateStatus">الحالة: متوقف</span>
+                    <button class="btn-ctrl" onclick="playVideo()">Play</button>
+                    <button class="btn-ctrl" onclick="pauseVideo()">Pause</button>
+                    <span class="ctrl-status" id="videoStateStatus">Status: Stopped</span>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- YouTube API & Custom JS -->
+    <!-- YouTube IFrame API & Custom JS -->
     <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="script.js?v=2.0"></script>
+    <script src="script.js?v=3.0"></script>
 </body>
 </html>
