@@ -1,20 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
 
 :root {
-    /* IT & Tech Color Palette */
     --bg-main: #090d16;
     --bg-card: rgba(15, 23, 42, 0.75);
     --border-color: rgba(99, 102, 241, 0.2);
     --border-hover: rgba(129, 140, 248, 0.5);
-    
     --text-main: #f1f5f9;
     --text-muted: #94a3b8;
-    
-    /* Glowing Gradients */
-    --primary-glow: #6366f1;
-    --secondary-glow: #06b6d4;
-    
-    /* Progress Status Colors */
     --danger: #ef4444;
     --warning: #f59e0b;
     --success: #10b981;
@@ -24,10 +16,9 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* Background Full Screen Tech Effect */
 body {
     background-color: var(--bg-main);
     color: var(--text-main);
@@ -36,7 +27,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Cyber Grid & Glowing Orbs Background */
+/* Fullscreen Tech Cyber Grid Background */
 body::before {
     content: '';
     position: fixed;
@@ -54,7 +45,6 @@ body::before {
     pointer-events: none;
 }
 
-/* Modern Navbar Glassmorphism */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -62,11 +52,7 @@ body::before {
     padding: 1.2rem 2.5rem;
     background: rgba(15, 23, 42, 0.8);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 0;
-    z-index: 100;
 }
 
 .logo {
@@ -75,105 +61,33 @@ body::before {
     background: linear-gradient(135deg, #a5b4fc 0%, #38bdf8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: -0.5px;
 }
 
-.status-locked, .status-unlocked {
+.status-locked {
     padding: 6px 14px;
     border-radius: 30px;
     font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-.status-locked {
     background: rgba(239, 68, 68, 0.15);
     color: var(--danger);
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-.status-unlocked {
-    background: rgba(16, 185, 129, 0.15);
-    color: var(--success);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-/* Layout Container */
 .main-container {
     display: grid;
-    grid-template-columns: 360px 1fr;
+    grid-template-columns: 320px 1fr;
     gap: 2rem;
     padding: 2rem;
     max-width: 1600px;
     margin: 0 auto;
 }
 
-@media (max-width: 1024px) {
-    .main-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Glass Sidebar */
-.sidebar {
+.sidebar, .video-player-card {
     background: var(--bg-card);
     backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 1.8rem;
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-.sidebar h3 {
-    margin-bottom: 1.2rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-main);
-    letter-spacing: -0.3px;
-}
-
-/* Accordion Menu */
-.accordion-item {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.accordion-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.1rem 0;
-    cursor: pointer;
-    font-weight: 600;
-    color: #cbd5e1;
-    transition: color 0.2s ease;
-}
-
-.accordion-title:hover {
-    color: #818cf8;
-}
-
-.accordion-content {
-    display: none;
-    padding-left: 0.5rem;
-}
-
-.accordion-content.active {
-    display: block;
-    padding-bottom: 1rem;
-}
-
-.chapter-heading {
-    font-size: 0.75rem;
-    color: #38bdf8;
-    margin-top: 14px;
-    margin-bottom: 8px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 .video-link {
@@ -182,22 +96,17 @@ body::before {
     align-items: center;
     padding: 10px 12px;
     color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.88rem;
-    font-weight: 600;
     cursor: pointer;
     border-radius: 10px;
-    margin-bottom: 4px;
-    transition: all 0.25s ease;
+    margin-bottom: 6px;
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .video-link:hover {
     background: rgba(99, 102, 241, 0.1);
     color: var(--text-main);
-    transform: translateX(4px);
 }
 
-/* Badges UI */
 .badge-status {
     font-size: 0.72rem;
     padding: 3px 8px;
@@ -205,81 +114,28 @@ body::before {
     font-weight: 700;
 }
 
-.badge-red {
-    background: rgba(239, 68, 68, 0.15);
-    color: #fca5a5;
-    border: 1px solid rgba(239, 68, 68, 0.2);
-}
+.badge-red { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+.badge-orange { background: rgba(245, 158, 11, 0.15); color: #fde047; }
+.badge-green { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; }
 
-.badge-orange {
-    background: rgba(245, 158, 11, 0.15);
-    color: #fde047;
-    border: 1px solid rgba(245, 158, 11, 0.2);
-}
-
-.badge-green {
-    background: rgba(16, 185, 129, 0.15);
-    color: #6ee7b7;
-    border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-/* Main Content & Video Card */
-.content-area {
-    display: flex;
-    flex-direction: column;
-}
-
-.video-player-card {
-    background: var(--bg-card);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-}
-
-.video-player-card h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 1.2rem;
-    color: var(--text-main);
-}
-
-/* Player Frame Container */
+/* Video Player Frame */
 .video-container {
     position: relative;
     width: 100%;
     padding-bottom: 56.25%;
-    height: 0;
     border-radius: 14px;
     overflow: hidden;
     background: #000;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.video-container iframe, .video-container #player {
+.video-container iframe {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
 }
 
-.video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    z-index: 10;
-    cursor: pointer;
-}
-
-/* Progress Section */
+/* Progress Bar Design */
 .single-video-progress {
     background: rgba(255, 255, 255, 0.02);
     padding: 16px;
@@ -299,7 +155,7 @@ body::before {
 
 .progress-bar-bg {
     width: 100%;
-    height: 8px;
+    height: 10px;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 10px;
     overflow: hidden;
@@ -309,128 +165,35 @@ body::before {
     width: 0%;
     height: 100%;
     border-radius: 10px;
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease;
+    transition: width 0.3s ease, background-color 0.3s ease;
 }
 
 .level-red { 
-    background: linear-gradient(90deg, #f87171, #ef4444) !important; 
-    box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+    background: linear-gradient(90deg, #f87171, #ef4444); 
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
 }
 .level-orange { 
-    background: linear-gradient(90deg, #fbbf24, #f59e0b) !important; 
-    box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+    background: linear-gradient(90deg, #fbbf24, #f59e0b); 
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
 }
 .level-green { 
-    background: linear-gradient(90deg, #34d399, #10b981) !important; 
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+    background: linear-gradient(90deg, #34d399, #10b981); 
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
 }
 
-/* Control Buttons */
 .custom-controls {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: rgba(255, 255, 255, 0.02);
-    padding: 12px 18px;
-    border-radius: 12px;
     margin-top: 1rem;
-    border: 1px solid var(--border-color);
-    flex-wrap: wrap;
 }
 
 .btn-ctrl {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: #6366f1;
     color: white;
     border: none;
-    padding: 10px 18px;
+    padding: 8px 16px;
     border-radius: 8px;
     font-weight: 700;
-    font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
-}
-
-.btn-ctrl:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
-}
-
-.ctrl-status {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-left: auto;
-}
-
-/* Modern Glass Modal */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(9, 13, 22, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.modal-content {
-    background: var(--bg-card);
-    border: 1px solid var(--border-hover);
-    padding: 2.5rem;
-    border-radius: 24px;
-    max-width: 420px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
-}
-
-.modal-content h2 {
-    font-size: 1.4rem;
-    margin-bottom: 0.8rem;
-}
-
-.modal-content p {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 1.2rem;
-}
-
-.modal-content input {
-    width: 100%;
-    padding: 12px 16px;
-    margin-bottom: 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.3);
-    color: white;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.modal-content input:focus {
-    border-color: var(--primary-glow);
-}
-
-.btn-submit {
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(135deg, #6366f1 0%, #38bdf8 100%);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.btn-submit:hover {
-    transform: scale(1.02);
 }
