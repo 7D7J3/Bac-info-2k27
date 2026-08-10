@@ -79,16 +79,29 @@ const coursesData = {
     }
 };
 
-// رابط الـ Google Apps Script الخاص بك
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby4z0sCAHqyVMz29LMQg3BctYCKyUohPGFXr_az8UGQtUGqB1mDoQok4u94G-mbwJsn/exec";
 
-// حماية الصفحة
+// Anti-Inspect protection
 document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || (e.ctrlKey && e.key === 'u')) {
+    if (
+        e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C', 'i', 'j', 'c'].includes(e.key)) || 
+        (e.ctrlKey && ['u', 'U', 's', 'S'].includes(e.key))
+    ) {
         e.preventDefault();
+        return false;
     }
 });
+
+setInterval(function() {
+    const startTime = performance.now();
+    debugger;
+    const endTime = performance.now();
+    if (endTime - startTime > 100) {
+        document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20%;'>Accès non autorisé (DevTools détecté).</h1>";
+    }
+}, 1000);
 
 var tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
@@ -98,12 +111,13 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 var player;
 var isPlaying = false;
 var playerReady = false;
+let isUserDragging = false;
 let generatedCode = "";
 let currentVideoId = "K5JXPhnLRgk";
 let progressTimer = null;
 const videoProgressData = {};
-
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const speeds = [1, 1.25, 1.5, 1.75, 2];
+let currentSpeedIndex = 0;
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
@@ -111,7 +125,8 @@ function onYouTubeIframeAPIReady() {
         width: '100%',
         videoId: currentVideoId,
         playerVars: { 
-            'controls': 1, 
+            'controls': 0,
+            'disablekb': 1,
             'modestbranding': 1, 
             'rel': 0, 
             'playsinline': 1 
@@ -138,21 +153,20 @@ function onPlayerStateChange(event) {
     }
 }
 
-// تتبع الـ Progress وتحديث النسبة
 function startTrackingProgress() {
     stopTrackingProgress();
     progressTimer = setInterval(() => {
-        if (playerReady && player && typeof player.getCurrentTime === 'function' && typeof player.getDuration === 'function') {
+        if (!isUserDragging && playerReady && player && typeof player.getCurrentTime === 'function' && typeof player.getDuration === 'function') {
             const currentTime = player.getCurrentTime();
             const duration = player.getDuration();
             
             if (duration > 0) {
-                const percentage = Math.floor((currentTime / duration) * 100);
-                videoProgressData[currentVideoId] = percentage;
+                const percentage = ((currentTime / duration) * 100).toFixed(1);
+                videoProgressData[currentVideoId] = Math.floor(percentage);
                 updateUIProgress(percentage);
             }
         }
-    }, 1000);
+    }, 500);
 }
 
 function stopTrackingProgress() {
@@ -160,22 +174,15 @@ function stopTrackingProgress() {
 }
 
 function updateUIProgress(percentage) {
-    const fill = document.getElementById('progressBarFill');
+    const progressBar = document.getElementById('progressBar');
     const text = document.getElementById('progressText');
     const badge = document.getElementById(`badge-${currentVideoId}`);
 
-    if (text) text.textContent = `${percentage}%`;
-
-    if (fill) {
-        fill.style.width = `${percentage}%`;
-        fill.classList.remove('level-red', 'level-orange', 'level-green');
-        if (percentage < 40) fill.classList.add('level-red');
-        else if (percentage < 80) fill.classList.add('level-orange');
-        else fill.classList.add('level-green');
-    }
+    if (progressBar && !isUserDragging) progressBar.value = percentage;
+    if (text) text.textContent = `${Math.floor(percentage)}%`;
 
     if (badge) {
-        badge.textContent = `${percentage}%`;
+        badge.textContent = `${Math.floor(percentage)}%`;
         badge.classList.remove('badge-red', 'badge-orange', 'badge-green');
         if (percentage < 40) badge.classList.add('badge-red');
         else if (percentage < 80) badge.classList.add('badge-orange');
@@ -183,7 +190,7 @@ function updateUIProgress(percentage) {
     }
 }
 
-// بناء القائمة الجانبية مع إتاحة الـ Badges لكل فيديو
+// Tree creation
 const treeContainer = document.getElementById('subjectTree');
 if (treeContainer) {
     treeContainer.innerHTML = '';
@@ -244,11 +251,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const playBtn = document.getElementById('playPauseBtn');
     const rewindBtn = document.getElementById('rewindBtn');
     const forwardBtn = document.getElementById('forwardBtn');
+    const speedBtn = document.getElementById('speedBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
     const overlay = document.getElementById('videoOverlay');
-
-    if (isMobile && overlay) {
-        overlay.style.pointerEvents = 'none';
-    }
+    const progressBar = document.getElementById('progressBar');
+    const playerWrapper = document.querySelector('.player-wrapper');
 
     function togglePlay() {
         if (playerReady && player) {
@@ -263,12 +270,66 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    if (speedBtn) {
+        speedBtn.addEventListener('click', function() {
+            if (playerReady && player && player.setPlaybackRate) {
+                currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
+                const newSpeed = speeds[currentSpeedIndex];
+                player.setPlaybackRate(newSpeed);
+                speedBtn.innerText = `⚡ ${newSpeed}x`;
+            }
+        });
+    }
+
+    if (fullscreenBtn && playerWrapper) {
+        fullscreenBtn.addEventListener('click', function() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement) {
+                if (playerWrapper.requestFullscreen) {
+                    playerWrapper.requestFullscreen();
+                } else if (playerWrapper.webkitRequestFullscreen) {
+                    playerWrapper.webkitRequestFullscreen();
+                } else if (playerWrapper.mozRequestFullScreen) {
+                    playerWrapper.mozRequestFullScreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                }
+            }
+        });
+    }
+
+    if (progressBar) {
+        progressBar.addEventListener('mousedown', () => isUserDragging = true);
+        progressBar.addEventListener('touchstart', () => isUserDragging = true);
+
+        const handleSeek = function() {
+            if (playerReady && player && player.getDuration) {
+                const targetPercent = parseFloat(this.value);
+                const targetTime = (player.getDuration() * targetPercent) / 100;
+                player.seekTo(targetTime, true);
+                const text = document.getElementById('progressText');
+                if (text) text.textContent = `${Math.floor(targetPercent)}%`;
+            }
+        };
+
+        progressBar.addEventListener('input', handleSeek);
+        progressBar.addEventListener('change', handleSeek);
+
+        progressBar.addEventListener('mouseup', () => isUserDragging = false);
+        progressBar.addEventListener('touchend', () => isUserDragging = false);
+    }
+
     if (playBtn) playBtn.addEventListener('click', togglePlay);
     if (overlay) overlay.addEventListener('click', togglePlay);
     if (rewindBtn) rewindBtn.addEventListener('click', () => seekRelative(-10));
     if (forwardBtn) forwardBtn.addEventListener('click', () => seekRelative(10));
 
-    // Gestion de la demande d'accès (Envoi des infos à l'admin)
+    // Access Modal Logic
     const loginForm = document.getElementById('loginForm');
     const codeForm = document.getElementById('codeForm');
     const userNameInput = document.getElementById('userName');
@@ -282,10 +343,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const name = userNameInput.value.trim();
             const email = userEmailInput.value.trim();
             
-            // توليد كود سري للمتابعة
             generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
             
-            // إرسال البيانات (الاسم، الإيميل، والكود) إلى الـ Script الخاص بك
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
