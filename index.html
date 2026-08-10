@@ -3,82 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plateforme Bac Info</title>
+    <title>E-Learning Portal | IT & Tech</title>
+    <!-- v=2.0 باش نتفاداو الـ Cache متاع GitHub -->
     <link rel="stylesheet" href="style.css?v=2.0">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Modal d'accès & Authentification -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <h2>🔒 Accès Sécurisé</h2>
-            
-            <form id="loginForm">
-                <p>Entrez vos coordonnées pour demander votre code d'accès à l'administrateur.</p>
-                <input type="text" id="userName" placeholder="Nom & Prénom" required>
-                <input type="email" id="userEmail" placeholder="Votre Adresse Email" required>
-                <button type="submit" class="btn-submit">Demander le code ✉️</button>
-            </form>
-
-            <form id="codeForm" style="display: none;">
-                <p id="codeInfoText" style="color: #10b981; font-size: 0.9rem; margin-bottom: 10px;"></p>
-                <input type="text" id="verificationCodeInput" placeholder="Entrez le code reçu" required>
-                <button type="submit" class="btn-submit">Valider le code 🔓</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Header -->
+    <!-- Navbar -->
     <header class="navbar">
-        <div class="logo">🎓 Bac Info Platform</div>
-        <div id="accessStatus" class="status-locked">🔒 Accès Restreint</div>
+        <div class="logo">⚡ IT Platform</div>
+        <div id="accountStatus" class="status-locked">المنصة مقفولة</div>
     </header>
 
     <!-- Main Container -->
     <div class="main-container">
         
-        <!-- Sidebar Menu -->
+        <!-- Sidebar Navigation -->
         <aside class="sidebar">
-            <h3>📂 Programme Bac Info</h3>
-            <div id="subjectTree" class="tree-menu"></div>
+            <h3>المحتوى التعليمي</h3>
+            
+            <div class="accordion-item">
+                <div class="accordion-title">Chapitre 1: Introduction</div>
+                <div class="accordion-content active">
+                    <div class="chapter-heading">الدروس</div>
+                    <a class="video-link" data-video-id="dQw4w9WgXcQ">
+                        <span>1.1 Introduction IT</span>
+                        <span class="badge-status badge-red" id="badge-dQw4w9WgXcQ">0%</span>
+                    </a>
+                </div>
+            </div>
         </aside>
 
-        <!-- Video Player -->
+        <!-- Main Content / Player Area -->
         <main class="content-area">
             <div class="video-player-card">
-                <h2 id="videoTitle">Sélectionnez une vidéo dans le menu à gauche 👈</h2>
+                <h2 id="videoTitle">مشاهدة الفيديو</h2>
                 
-                <!-- Protected Video Container -->
+                <!-- Player Box -->
                 <div class="video-container">
                     <div id="player"></div>
-                    <div class="video-overlay" id="videoOverlay"></div>
                 </div>
 
-                <!-- Individual Video Progress Bar -->
+                <!-- Single Video Progress Bar -->
                 <div class="single-video-progress">
                     <div class="progress-info">
-                        <span>Progression de cette vidéo</span>
-                        <span id="currentVideoPercent">0%</span>
+                        <span>نسبة تقدم الفيديو الحالي:</span>
+                        <span id="progressText">0%</span>
                     </div>
                     <div class="progress-bar-bg">
-                        <div id="currentVideoBar" class="progress-bar-fill level-red"></div>
+                        <div id="progressBarFill" class="progress-bar-fill level-red"></div>
                     </div>
                 </div>
 
-                <!-- Custom Controls Bar -->
+                <!-- Controls -->
                 <div class="custom-controls">
-                    <button id="rewindBtn" class="btn-ctrl">⏪ -10s</button>
-                    <button id="playPauseBtn" class="btn-ctrl">▶ Play / Pause</button>
-                    <button id="forwardBtn" class="btn-ctrl">⏩ +10s</button>
-                    <span id="playerStatus" class="ctrl-status">Choisissez une vidéo pour commencer</span>
+                    <button class="btn-ctrl" onclick="playVideo()">تشغيل</button>
+                    <button class="btn-ctrl" onclick="pauseVideo()">إيقاف مؤقت</button>
+                    <span class="ctrl-status" id="videoStateStatus">الحالة: متوقف</span>
                 </div>
-
             </div>
         </main>
-
     </div>
 
-    <script src="script.js"></script>
+    <!-- YouTube API & Custom JS -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="script.js?v=2.0"></script>
 </body>
 </html>
