@@ -1,87 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Learning Portal</title>
-    <link rel="stylesheet" href="style.css?v=3.0">
+    <title>Plateforme Bac Info</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Navbar -->
-    <header class="navbar">
-        <div class="logo">⚡ TechAcademy</div>
-        <nav class="nav-links">
-            <a href="#" class="nav-item active">Courses</a>
-            <a href="#" class="nav-item">Dashboard</a>
-            <a href="#" class="nav-item">Resources</a>
-        </nav>
-        <div id="accountStatus" class="status-locked">Locked</div>
-    </header>
+    <!-- Modal d'accès -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Accès à la Plateforme</h2>
+            <form id="loginForm">
+                <input type="text" id="userName" placeholder="Nom et Prénom" required>
+                <input type="email" id="userEmail" placeholder="Adresse Email" required>
+                <button type="submit">Demander l'accès</button>
+            </form>
 
-    <!-- Main Container -->
-    <div class="main-container">
-        
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <h3>Course Curriculum</h3>
-            
-            <div class="accordion-item">
-                <div class="accordion-title">Module 1: Web Development</div>
-                <div class="accordion-content active">
-                    <div class="chapter-heading">Lessons</div>
-                    
-                    <a class="video-link active-link" onclick="loadVideo('w7ejDZ8SWv8', '1.1 HTML & CSS Crash Course', this)">
-                        <span>1.1 HTML & CSS Crash Course</span>
-                        <span class="badge-status badge-red" id="badge-w7ejDZ8SWv8">0%</span>
-                    </a>
-
-                    <a class="video-link" onclick="loadVideo('hdI2bqOjy3c', '1.2 JavaScript Fundamentals', this)">
-                        <span>1.2 JavaScript Fundamentals</span>
-                        <span class="badge-status badge-red" id="badge-hdI2bqOjy3c">0%</span>
-                    </a>
-
-                    <a class="video-link" onclick="loadVideo('32M1al-Y6Ag', '1.3 Python Programming Basics', this)">
-                        <span>1.3 Python Programming Basics</span>
-                        <span class="badge-status badge-red" id="badge-32M1al-Y6Ag">0%</span>
-                    </a>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content / Player Area -->
-        <main class="content-area">
-            <div class="video-player-card">
-                <h2 id="videoTitle">1.1 HTML & CSS Crash Course</h2>
-                
-                <!-- Player Box -->
-                <div class="video-container">
-                    <div id="player"></div>
-                </div>
-
-                <!-- Progress Section -->
-                <div class="single-video-progress">
-                    <div class="progress-info">
-                        <span>Current Video Progress:</span>
-                        <span id="progressText">0%</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div id="progressBarFill" class="progress-bar-fill level-red"></div>
-                    </div>
-                </div>
-
-                <!-- Custom Controls -->
-                <div class="custom-controls">
-                    <button class="btn-ctrl" onclick="playVideo()">Play</button>
-                    <button class="btn-ctrl" onclick="pauseVideo()">Pause</button>
-                    <span class="ctrl-status" id="videoStateStatus">Status: Stopped</span>
-                </div>
-            </div>
-        </main>
+            <form id="codeForm" style="display: none;">
+                <p id="codeInfoText"></p>
+                <input type="text" id="verificationCodeInput" placeholder="Entrez le code" required>
+                <button type="submit">Valider le code</button>
+            </form>
+        </div>
     </div>
 
-    <!-- YouTube IFrame API & Custom JS -->
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="script.js?v=3.0"></script>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>Programme Bac Info</h3>
+                <span id="accessStatus" class="status-locked">🔒 Accès Restreint</span>
+            </div>
+            <div id="subjectTree" class="tree-container"></div>
+        </div>
+
+        <!-- Main Player Content -->
+        <div class="main-content">
+            <h2 id="videoTitle">Sélectionnez une séance</h2>
+            
+            <div class="player-wrapper">
+                <div id="player"></div>
+                <div id="videoOverlay" class="video-overlay"></div>
+            </div>
+
+            <!-- Global Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span>Progression de la vidéo :</span>
+                    <span id="progressText">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progressBarFill" class="progress-bar-fill level-red"></div>
+                </div>
+            </div>
+
+            <!-- Player Controls -->
+            <div class="controls-bar">
+                <button id="rewindBtn">⏮ -10s</button>
+                <button id="playPauseBtn">▶ / ⏸</button>
+                <button id="forwardBtn">+10s ⏭</button>
+                <span id="playerStatus">⏸ En pause</span>
+                <button onclick="notifyPdfDownload()" class="pdf-btn">📄 Support PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
