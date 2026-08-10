@@ -9,12 +9,11 @@
 </head>
 <body>
 
-    <!-- Modal d'accès & Vérification par Code -->
+    <!-- Modal d'accès & Authentification -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <h2>🔒 Accès Sécurisé</h2>
             
-            <!-- Étape 1 : Demande d'email et nom -->
             <form id="loginForm">
                 <p>Entrez vos coordonnées pour demander votre code d'accès à l'administrateur.</p>
                 <input type="text" id="userName" placeholder="Nom & Prénom" required>
@@ -22,7 +21,6 @@
                 <button type="submit" class="btn-submit">Demander le code ✉️</button>
             </form>
 
-            <!-- Étape 2 : Validation du Code reçu -->
             <form id="codeForm" style="display: none;">
                 <p id="codeInfoText" style="color: #10b981; font-size: 0.9rem; margin-bottom: 10px;"></p>
                 <input type="text" id="verificationCodeInput" placeholder="Entrez le code reçu" required>
@@ -37,28 +35,16 @@
         <div id="accessStatus" class="status-locked">🔒 Accès Restreint</div>
     </header>
 
-    <!-- App Layout -->
+    <!-- Main Container -->
     <div class="main-container">
         
-        <!-- Sidebar : Navigation & Suivi de Progression -->
+        <!-- Sidebar Menu -->
         <aside class="sidebar">
             <h3>📂 Programme Bac Info</h3>
-            
-            <!-- Progression Global -->
-            <div class="progress-box">
-                <div class="progress-info">
-                    <span>Progression globale</span>
-                    <span id="progressText">0%</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div id="progressBar" class="progress-bar-fill"></div>
-                </div>
-            </div>
-
             <div id="subjectTree" class="tree-menu"></div>
         </aside>
 
-        <!-- Main Content : Lecteur Vidéo Protected & Supports PDF -->
+        <!-- Video Player -->
         <main class="content-area">
             <div class="video-player-card">
                 <h2 id="videoTitle">Sélectionnez une vidéo dans le menu à gauche 👈</h2>
@@ -66,7 +52,18 @@
                 <!-- Protected Video Container -->
                 <div class="video-container">
                     <div id="player"></div>
-                    <div class="video-overlay" id="videoOverlay" title="Cliquez pour Play/Pause"></div>
+                    <div class="video-overlay" id="videoOverlay"></div>
+                </div>
+
+                <!-- Individual Video Progress Bar -->
+                <div class="single-video-progress">
+                    <div class="progress-info">
+                        <span>Progression de cette vidéo</span>
+                        <span id="currentVideoPercent">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="currentVideoBar" class="progress-bar-fill level-red"></div>
+                    </div>
                 </div>
 
                 <!-- Custom Controls Bar -->
@@ -75,17 +72,6 @@
                     <button id="playPauseBtn" class="btn-ctrl">▶ Play / Pause</button>
                     <button id="forwardBtn" class="btn-ctrl">⏩ +10s</button>
                     <span id="playerStatus" class="ctrl-status">Choisissez une vidéo pour commencer</span>
-                </div>
-
-                <!-- Section Supports PDF du Trimestre -->
-                <div class="pdf-section">
-                    <h3>📚 Documents & Supports PDF du Trimestre</h3>
-                    <p class="pdf-subtitle">Téléchargez les cours, séries et devoirs corrigés pour ce chapitre :</p>
-                    <div class="pdf-buttons-grid">
-                        <a id="btnPdfCours" href="#" target="_blank" class="btn-pdf-item btn-cours">📖 Cours PDF</a>
-                        <a id="btnPdfSeries" href="#" target="_blank" class="btn-pdf-item btn-series">📝 Séries d'exercices</a>
-                        <a id="btnPdfDevoirs" href="#" target="_blank" class="btn-pdf-item btn-devoirs">📑 Devoirs + Correction</a>
-                    </div>
                 </div>
 
             </div>
