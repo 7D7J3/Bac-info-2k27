@@ -11,6 +11,7 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     user-select: none;
+    -webkit-user-select: none;
 }
 
 .app-container {
@@ -104,7 +105,7 @@ body {
     color: #ffffff;
 }
 
-/* Status Badges */
+/* Badges */
 .badge-status {
     font-size: 11px;
     padding: 2px 8px;
@@ -113,9 +114,9 @@ body {
     color: #fff;
 }
 
-.badge-red, .level-red { background-color: #ef4444; }
-.badge-orange, .level-orange { background-color: #f97316; }
-.badge-green, .level-green { background-color: #22c55e; }
+.badge-red { background-color: #ef4444; }
+.badge-orange { background-color: #f97316; }
+.badge-green { background-color: #22c55e; }
 
 /* Main Content */
 .main-content {
@@ -130,7 +131,7 @@ body {
     position: relative;
     width: 100%;
     height: 0;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    padding-bottom: 56.25%;
     background: #000;
     border-radius: 8px;
     overflow: hidden;
@@ -143,6 +144,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
+    pointer-events: none;
 }
 
 .video-overlay {
@@ -151,35 +153,51 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 2;
+    z-index: 10;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.001);
 }
 
-/* Progress Bar */
+/* Interactive Seek Bar */
 .progress-container {
     background: #1e293b;
     padding: 12px 18px;
     border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .progress-info {
     display: flex;
     justify-content: space-between;
     font-size: 13px;
-    margin-bottom: 6px;
+    color: #94a3b8;
 }
 
-.progress-bar-bg {
+input[type=range]#progressBar {
+    -webkit-appearance: none;
     width: 100%;
-    height: 8px;
-    background-color: #334155;
+    height: 6px;
+    background: #334155;
     border-radius: 4px;
-    overflow: hidden;
+    outline: none;
+    cursor: pointer;
 }
 
-.progress-bar-fill {
-    height: 100%;
-    width: 0%;
-    transition: width 0.3s ease, background-color 0.3s ease;
+input[type=range]#progressBar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ef4444;
+    cursor: pointer;
+    transition: transform 0.1s ease-in-out;
+}
+
+input[type=range]#progressBar::-webkit-slider-thumb:hover {
+    transform: scale(1.3);
 }
 
 /* Controls Bar */
@@ -190,6 +208,7 @@ body {
     background-color: #1e293b;
     padding: 12px;
     border-radius: 6px;
+    flex-wrap: wrap;
 }
 
 button {
@@ -205,12 +224,23 @@ button {
 
 button:hover { background-color: #7dd3fc; }
 
+.control-btn {
+    background-color: #475569;
+    color: #fff;
+}
+.control-btn:hover { background-color: #64748b; }
+
 .pdf-btn {
     margin-left: auto;
     background-color: #f43f5e;
     color: #fff;
 }
 .pdf-btn:hover { background-color: #fb7185; }
+
+/* Mode Fullscreen */
+.player-wrapper:fullscreen { width: 100vw; height: 100vh; padding-bottom: 0; }
+.player-wrapper:-webkit-full-screen { width: 100vw; height: 100vh; padding-bottom: 0; }
+.player-wrapper:-moz-full-screen { width: 100vw; height: 100vh; padding-bottom: 0; }
 
 /* Modal */
 .modal {
@@ -244,4 +274,35 @@ button:hover { background-color: #7dd3fc; }
 .modal-content button {
     width: 100%;
     margin-top: 10px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 100% !important;
+        max-height: 280px;
+        border-right: none;
+        border-bottom: 2px solid #334155;
+    }
+
+    .main-content {
+        padding: 15px;
+        width: 100%;
+    }
+
+    .controls-bar {
+        justify-content: center;
+    }
+
+    .pdf-btn {
+        margin-left: 0;
+        width: 100%;
+        margin-top: 5px;
+    }
 }
