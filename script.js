@@ -1,63 +1,22 @@
-// Database Kamla mta3 les cours (194 Vidéos)
 const coursesData = {
     "Algo & Programmation": {
-        "Rappel 2ème et 3ème": [
-            "K5JXPhnLRgk", "anUmFPScezU", "9ClIgr3c0MA", "FAIczg82_S8", "bJOl8Gpijyk", "6RFddI0YWYg", "VUw0jI3QoO4"
-        ],
-        "Trimestre 1": [
-            "LsSBHXYKaac", "hfTkdp0UmfQ", "tL-y0NPxcbM", "bi-7zW2drJY", "InDFw85-mN8", "Y-7voDpFFpQ", "1t5q-BtpHiM", 
-            "24gXLZ0-tL8", "doehlCKXVIs", "wIT2BbFYmvs", "V6e7GcFVT3s", "zgGEGCTn4bg", "1ruppPqt3KY", "isRvFA8QbiU", 
-            "B54jAXctkBs", "cDR8asFb5as", "uzqtK7IhX04", "nlbmCQkZQHc", "4b8OPM93MH8"
-        ],
-        "Trimestre 2": [
-            "9lxnnV171Ts", "KFW-xCngdC0", "XdVqkVmHNPQ", "x54HPYyElHY", "9R_BeAGeIzo", "vJcMFAAxlow", "dR8iww78pFQ", 
-            "jz-9xDOAAXo", "zhOiRgP5gDc", "c0Lv5P9R1Ks", "u9dHK5Yj718", "pG_d-d9NyT4", "5DPs2PTkLFU", "UFx-5k9weVU", 
-            "mtt2j261WHk", "4aoZe8DdCdc"
-        ],
-        "Trimestre 3": [
-            "LN3BePic4ZA", "ai3pgdcN438", "azsNLQxkiJw", "-i21Pi9EJhM", "DR_iukhe3zU", "-s_wQEyoU8Q", "VjvekSMvsW4", 
-            "EYGiRrctT-A", "w03ZUo4WjXw"
-        ],
-        "Interface Graphique": [
-            "9ACP7VLEd0s", "fYvTpQY0ol8", "trhCJTxRdeg", "AKR8-0rUwt8", "vfU9GYUSxyQ", "upBeJIeuB_I", "qKkzKXkct9w", 
-            "sVv-V8MexcY", "cMUf4ETzRv4", "y9ro35BGDkM", "PbqCrKkItHw", "v6dUDS6lqkY", "6bnr1y5gCuA", "DIFpuR4shas", 
-            "xMv-UFwJg_M", "3bgEDUWRdQ8", "maT-9UO1NWg", "yqStV_JJD4Y", "ZZnSAFZhbso"
-        ]
+        "Rappel 2ème et 3ème": ["K5JXPhnLRgk", "anUmFPScezU", "9ClIgr3c0MA", "FAIczg82_S8", "bJOl8Gpijyk", "6RFddI0YWYg", "VUw0jI3QoO4"],
+        "Trimestre 1": ["LsSBHXYKaac", "hfTkdp0UmfQ", "tL-y0NPxcbM", "bi-7zW2drJY", "InDFw85-mN8", "Y-7voDpFFpQ", "1t5q-BtpHiM", "24gXLZ0-tL8", "doehlCKXVIs", "wIT2BbFYmvs", "V6e7GcFVT3s", "zgGEGCTn4bg", "1ruppPqt3KY", "isRvFA8QbiU", "B54jAXctkBs", "cDR8asFb5as", "uzqtK7IhX04", "nlbmCQkZQHc", "4b8OPM93MH8"],
+        "Trimestre 2": ["9lxnnV171Ts", "KFW-xCngdC0", "XdVqkVmHNPQ", "x54HPYyElHY", "9R_BeAGeIzo", "vJcMFAAxlow", "dR8iww78pFQ", "jz-9xDOAAXo", "zhOiRgP5gDc", "c0Lv5P9R1Ks", "u9dHK5Yj718", "pG_d-d9NyT4", "5DPs2PTkLFU", "UFx-5k9weVU", "mtt2j261WHk", "4aoZe8DdCdc"],
+        "Trimestre 3": ["LN3BePic4ZA", "ai3pgdcN438", "azsNLQxkiJw", "-i21Pi9EJhM", "DR_iukhe3zU", "-s_wQEyoU8Q", "VjvekSMvsW4", "EYGiRrctT-A", "w03ZUo4WjXw"],
+        "Interface Graphique": ["9ACP7VLEd0s", "fYvTpQY0ol8", "trhCJTxRdeg", "AKR8-0rUwt8", "vfU9GYUSxyQ", "upBeJIeuB_I", "qKkzKXkct9w", "sVv-V8MexcY", "cMUf4ETzRv4", "y9ro35BGDkM", "PbqCrKkItHw", "v6dUDS6lqkY", "6bnr1y5gCuA", "DIFpuR4shas", "xMv-UFwJg_M", "3bgEDUWRdQ8", "maT-9UO1NWg", "yqStV_JJD4Y", "ZZnSAFZhbso"]
     },
     "Mathématiques": {
-        "Trimestre 1": [
-            "wRDKMs8_z3A", "4syFXHGbzpg", "XAQ9-hfTygo", "scWTkw1iU4o", "jh1xun9boZ4", "74nTDiO34EE", "-GMiKisOTmk", 
-            "NWGUrAkJGwI", "ynbE18DkuB8", "AaZZ2hNSyFM", "C5wldBYUUhY", "ME9qVYPG02k", "lWXKeBOCdSA", "i1fqvWiVIvA", 
-            "YNB8PGM5IPc", "mX3y12i-nmc", "1IeHHca_F18", "cMv7nFtHpGg", "oQw8cGbGbYQ"
-        ],
-        "Trimestre 2": [
-            "LLqUvqxbIFk", "CNIvYQefF-c", "t0CK3zqTdiw", "8QBYx_kZyso", "w2qg0t8anRs", "BcHwkOL6ty0", "FG6gQLiA6Kk", 
-            "faShoxwYfdk", "PY6ZipSH8mE", "dyQBWEQEMvo", "uYVFPjKnLMc", "L5Ob5zQZWx8", "zx-D5iWcbr0"
-        ],
-        "Trimestre 3": [
-            "egToxKxTGWU", "0faFMobSWVU", "ZZeVQkiupIw", "5rEKeLpJHug", "U1KSb815cMI", "k7P6jNNg3ik", "R3LSIig28Fc", 
-            "PuYGqCr2Xug", "1q7bMphKX1o", "lgcPyoIdNgs", "WMQOtQqsYZU", "93cWjvS9PsU", "OeekX0G6Xcc", "VpZ2jvY9Uy4", 
-            "y49ZNuE2qrw", "Un_E9putrXE"
-        ]
+        "Trimestre 1": ["wRDKMs8_z3A", "4syFXHGbzpg", "XAQ9-hfTygo", "scWTkw1iU4o", "jh1xun9boZ4", "74nTDiO34EE", "-GMiKisOTmk", "NWGUrAkJGwI", "ynbE18DkuB8", "AaZZ2hNSyFM", "C5wldBYUUhY", "ME9qVYPG02k", "lWXKeBOCdSA", "i1fqvWiVIvA", "YNB8PGM5IPc", "mX3y12i-nmc", "1IeHHca_F18", "cMv7nFtHpGg", "oQw8cGbGbYQ"],
+        "Trimestre 2": ["LLqUvqxbIFk", "CNIvYQefF-c", "t0CK3zqTdiw", "8QBYx_kZyso", "w2qg0t8anRs", "BcHwkOL6ty0", "FG6gQLiA6Kk", "faShoxwYfdk", "PY6ZipSH8mE", "dyQBWEQEMvo", "uYVFPjKnLMc", "L5Ob5zQZWx8", "zx-D5iWcbr0"],
+        "Trimestre 3": ["egToxKxTGWU", "0faFMobSWVU", "ZZeVQkiupIw", "5rEKeLpJHug", "U1KSb815cMI", "k7P6jNNg3ik", "R3LSIig28Fc", "PuYGqCr2Xug", "1q7bMphKX1o", "lgcPyoIdNgs", "WMQOtQqsYZU", "93cWjvS9PsU", "OeekX0G6Xcc", "VpZ2jvY9Uy4", "y49ZNuE2qrw", "Un_E9putrXE"]
     },
     "Physique & Chimie": {
-        "Physique T1": [
-            "hAH0U4yJdU8", "_p5-lXf62_E", "mj6U1ZniGLM", "mIsIOa9zpGo", "KYOXitzanaA", "75he0zLHMvk", "pBpeLKX_6b8", 
-            "5YTGWRWZ_gc", "F7jaUv0uMAo", "Q1epnmMbeOI", "2riqdA1YaHM", "yU1367szj-w", "Ga-5IK1FY0E", "PWrSoz92sLw"
-        ],
-        "Chimie": [
-            "3SLmnbcuGpU", "0uTizl9xFcw", "PRXzJl25UFw", "aJsvzYq3XQQ", "OyFA5vu8GpI", "gHbkgvI97Xo", "PnXgRwmm4Lg", "cZTJsQIvnCk"
-        ],
-        "Physique T2": [
-            "QO7DpvLqKxo", "w1CnIZu7C6w", "fJ0FgMaLw-k", "yYzrIDRq4-0", "v8qB4Kpb3q0", "c4Aag9lW8eY", "2lSVuGnXKUI", 
-            "VXiGGajRF0U", "PTqjpNHkw4c"
-        ],
-        "Physique T3": [
-            "MyGyv33UdNM", "91fzBx7kwJI", "a7t2R2tAB9g", "TamioYQ8nw4", "dlW08Fb2R-Q", "Zn0FvSwuAOA", "7qMDHfahHEg", "n2sdDsv945Q"
-        ],
-        "Révision Physique": [
-            "rIOrdrDqHtc", "sbG0CTUDNMc", "KXGlETTi1Mk", "dnH461AvNvU", "eeCoMgMMKxc", "0Q7xDpphMaQ", "HOA7C74v23s", "tXTD9qtkiBU"
-        ]
+        "Physique T1": ["hAH0U4yJdU8", "_p5-lXf62_E", "mj6U1ZniGLM", "mIsIOa9zpGo", "KYOXitzanaA", "75he0zLHMvk", "pBpeLKX_6b8", "5YTGWRWZ_gc", "F7jaUv0uMAo", "Q1epnmMbeOI", "2riqdA1YaHM", "yU1367szj-w", "Ga-5IK1FY0E", "PWrSoz92sLw"],
+        "Chimie": ["3SLmnbcuGpU", "0uTizl9xFcw", "PRXzJl25UFw", "aJsvzYq3XQQ", "OyFA5vu8GpI", "gHbkgvI97Xo", "PnXgRwmm4Lg", "cZTJsQIvnCk"],
+        "Physique T2": ["QO7DpvLqKxo", "w1CnIZu7C6w", "fJ0FgMaLw-k", "yYzrIDRq4-0", "v8qB4Kpb3q0", "c4Aag9lW8eY", "2lSVuGnXKUI", "VXiGGajRF0U", "PTqjpNHkw4c"],
+        "Physique T3": ["MyGyv33UdNM", "91fzBx7kwJI", "a7t2R2tAB9g", "TamioYQ8nw4", "dlW08Fb2R-Q", "Zn0FvSwuAOA", "7qMDHfahHEg", "n2sdDsv945Q"],
+        "Révision Physique": ["rIOrdrDqHtc", "sbG0CTUDNMc", "KXGlETTi1Mk", "dnH461AvNvU", "eeCoMgMMKxc", "0Q7xDpphMaQ", "HOA7C74v23s", "tXTD9qtkiBU"]
     },
     "STI (Mme Salma)": {
         "BD": ["nOhQ8yOtwPo", "lUhWMzL8ucU", "CLq5J17d5fs", "p7rgqUvu9pc"],
@@ -82,73 +41,15 @@ const coursesData = {
     }
 };
 
-// Database des Liens PDF par Trimestre / Chapitre / Matière
-const pdfResources = {
-    "STI (Mr Omar)": {
-        "Notion BD & SGBD": {
-            cours: "https://drive.google.com/drive/folders/1Jnn3hkeTx1DGlgcB-qb4ULlJ37lPWNKu?usp=drive_link",
-            series: "https://drive.google.com/drive/folders/18_WSCvCHVVKsrt7bqXOVz2BCgNn5EsLb?usp=drive_link",
-            devoirs: "https://drive.google.com/drive/folders/1eWslObubH4MFFQf7XUubHN_sBrVIaYGf?usp=drive_link"
-        },
-        "Structure BD": {
-            cours: "https://drive.google.com/drive/folders/1UpUSlod6Gx7HlydtHWcu7dfFAzAxL9wL?usp=drive_link",
-            series: "https://drive.google.com/drive/folders/1oWHKKmiI0MJpg7_ANWBcxDEitWubk3Pm?usp=drive_link",
-            devoirs: "https://drive.google.com/drive/folders/1HIOJrGEYKdQF0YZB7_lpsRFtXjF-oqv2?usp=drive_link"
-        },
-        "LDD": {
-            cours: "https://drive.google.com/drive/folders/153wBKkv0yGozfFYIpy4pHZ8wt90pZ7rS?usp=drive_link",
-            series: "https://drive.google.com/drive/folders/1ktdgkSlNzt4Z8rB50wLORXjnzyVXmiku?usp=drive_link",
-            devoirs: "https://drive.google.com/drive/folders/14ERgItigzaunJNNR97JzwV1eUyJjwR4z?usp=drive_link"
-        },
-        "LMD": {
-            cours: "#",
-            series: "https://drive.google.com/drive/folders/1lHwsYkH3ZluEe4rapvDrRK6ppj1sx97Y?usp=drive_link",
-            devoirs: "https://drive.google.com/drive/folders/1nLGDK5-fvUmtEK9VRbkfP5OeY-ztcqSt?usp=drive_link"
-        },
-        "HTML + CSS": {
-            cours: "#",
-            series: "https://drive.google.com/drive/folders/1Qanx5PqZs4jOuqMEaZOSWbfYEpF5vJme?usp=drive_link",
-            devoirs: "https://drive.google.com/drive/folders/1yQ_kL7sNoGrXt8Z8asQGTUZTTwiXbxN4?usp=drive_link"
-        },
-        "HTML + CSS + JS": {
-            cours: "#",
-            series: "https://drive.google.com/drive/folders/1LNYxgowVHcSQWpNoGY6R24QFGbUzdNof?usp=drive_link",
-            devoirs: "https://drive.google.com/drive/folders/1zRCaN00qqAxTu0kp2oMpwwUUq1KVNmfd?usp=drive_link"
-        },
-        "JS": {
-            cours: "https://drive.google.com/drive/folders/1BdgpOEfQ8MOwwpn7Da73sq1IUP26H3aq?usp=drive_link",
-            series: "https://drive.google.com/drive/folders/1jEnyssOCCBV1mFeVoD_QTsvkt6VgW19n?usp=drive_link",
-            devoirs: "https://drive.google.com/drive/folders/1MiRLCqNb2yIrTWShB8CbgaHAYIcSmAWk?usp=drive_link"
-        },
-        "PHP": {
-            cours: "https://drive.google.com/drive/folders/17UzZtcLb3H9jVybUAiDLC7O8YEJgH5TF?usp=drive_link",
-            series: "https://drive.google.com/drive/folders/1QLE5M2M0TlMlZCm12aMkFHNXR25Le7pl?usp=drive_link",
-            devoirs: "https://drive.google.com/drive/folders/1LxWoEIWJFJ2BdpPgQimd_iseWlrAft8k?usp=drive_link"
-        },
-        "Travaux Théoriques": {
-            cours: "#",
-            series: "https://drive.google.com/drive/folders/1vodU0dVMJP_AvVzj00_5hEYEMH-ANxXv?usp=sharing",
-            devoirs: "https://drive.google.com/drive/folders/178B-Ma9u4VDxxagpqY4SKQTykV7nMiak?usp=drive_link"
-        },
-        "Travaux Pratiques": {
-            cours: "#",
-            series: "https://drive.google.com/drive/folders/1w4siu35z4kjhn8_o0t_-QWgxlB74JWCF?usp=drive_link",
-            devoirs: "https://drive.google.com/drive/folders/1v5kmEeNF6mUpSiFtPyhkzqWraJ2cZ7Kq?usp=drive_link"
-        },
-        "Révision STI": {
-            cours: "#",
-            series: "https://drive.google.com/drive/folders/16yJtNaJLsJkzOyzgFeb16Ffaj7jZVlFk?usp=drive_link",
-            devoirs: "https://drive.google.com/drive/folders/1t8HFMHo9hQa5TA14_Mo5ZCAphQqxhqyt?usp=drive_link"
-        }
-    }
-};
-
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby5-gqZzofu4uowiAO9XVTFqnB5JzQNIEUdZ_DOq0hDippOegkGM-fv9BvsAknyFXg0/exec";
 
-let completedVideos = JSON.parse(localStorage.getItem('bacInfoCompletedVideos')) || [];
-let currentVideoId = null;
+// LocalStorage Object pour enregistrer le % de chaque vidéo
+let videoProgressData = JSON.parse(localStorage.getItem('bacInfoVideoProgressData')) || {};
 
-// Lock DevTools & Right Click Protection
+let currentVideoId = null;
+let progressInterval = null;
+
+// Lock DevTools & Right Click
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('keydown', e => {
     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || (e.ctrlKey && e.key === 'u')) {
@@ -192,45 +93,97 @@ function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         isPlaying = true;
         if (statusText) statusText.innerText = "▶ Lecture en cours...";
+        startTrackingProgress();
     } else if (event.data === YT.PlayerState.PAUSED) {
         isPlaying = false;
         if (statusText) statusText.innerText = "⏸ En pause";
+        stopTrackingProgress();
     } else if (event.data === YT.PlayerState.ENDED) {
+        isPlaying = false;
+        stopTrackingProgress();
         if (currentVideoId) {
-            markVideoAsCompleted(currentVideoId);
+            updateVideoProgress(currentVideoId, 100);
         }
     }
 }
 
-function updateProgressBar() {
-    let totalVideos = 0;
-    for (let s in coursesData) {
-        for (let c in coursesData[s]) {
-            totalVideos += coursesData[s][c].length;
+function startTrackingProgress() {
+    stopTrackingProgress();
+    progressInterval = setInterval(() => {
+        if (playerReady && player && player.getCurrentTime && player.getDuration) {
+            const currentTime = player.getCurrentTime();
+            const duration = player.getDuration();
+            if (duration > 0) {
+                let percent = Math.floor((currentTime / duration) * 100);
+                if (percent > 100) percent = 100;
+                
+                // Enregistrer si le % actuel est supérieur
+                let savedPercent = videoProgressData[currentVideoId] || 0;
+                if (percent > savedPercent) {
+                    updateVideoProgress(currentVideoId, percent);
+                }
+            }
         }
-    }
-
-    const completedCount = completedVideos.length;
-    const percentage = Math.round((completedCount / totalVideos) * 100);
-
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-
-    if (progressBar) progressBar.style.width = percentage + '%';
-    if (progressText) progressText.innerText = percentage + '% (' + completedCount + '/' + totalVideos + ')';
+    }, 1000);
 }
 
-function markVideoAsCompleted(id) {
-    if (!completedVideos.includes(id)) {
-        completedVideos.push(id);
-        localStorage.setItem('bacInfoCompletedVideos', JSON.stringify(completedVideos));
-        
-        const link = document.querySelector(`[data-video-id="${id}"]`);
-        if (link) {
-            link.classList.add('completed');
+function stopTrackingProgress() {
+    if (progressInterval) clearInterval(progressInterval);
+}
+
+function updateVideoProgress(id, percent) {
+    videoProgressData[id] = percent;
+    localStorage.setItem('bacInfoVideoProgressData', JSON.stringify(videoProgressData));
+    
+    // UI Progress Bar
+    renderProgressBarUI(percent);
+
+    // Sidebar Badge UI
+    updateSidebarBadge(id, percent);
+}
+
+function renderProgressBarUI(percent) {
+    const bar = document.getElementById('currentVideoBar');
+    const text = document.getElementById('currentVideoPercent');
+
+    if (bar && text) {
+        bar.style.width = percent + '%';
+        text.innerText = percent + '%';
+
+        bar.className = 'progress-bar-fill';
+        if (percent === 100) {
+            bar.classList.add('level-green');
+            text.innerText = "100% (Terminé ✔)";
+        } else if (percent >= 50) {
+            bar.classList.add('level-orange');
+        } else {
+            bar.classList.add('level-red');
+        }
+    }
+}
+
+function updateSidebarBadge(id, percent) {
+    const link = document.querySelector(`[data-video-id="${id}"]`);
+    if (link) {
+        let badge = link.querySelector('.badge-status');
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.className = 'badge-status';
+            link.appendChild(badge);
         }
 
-        updateProgressBar();
+        if (percent === 100) {
+            badge.className = 'badge-status badge-green';
+            badge.innerText = '✔ DONE';
+        } else if (percent >= 50) {
+            badge.className = 'badge-status badge-orange';
+            badge.innerText = `${percent}%`;
+        } else if (percent > 0) {
+            badge.className = 'badge-status badge-red';
+            badge.innerText = `${percent}%`;
+        } else {
+            badge.innerText = '';
+        }
     }
 }
 
@@ -261,24 +214,25 @@ if (treeContainer) {
             coursesData[subject][chapter].forEach(function(videoId, index) {
                 let link = document.createElement('a');
                 link.className = 'video-link';
-                if (completedVideos.includes(videoId)) {
-                    link.classList.add('completed');
-                }
                 link.setAttribute('data-video-id', videoId);
                 link.innerHTML = `<span>▶ Séance ${index + 1}</span>`;
                 
                 link.onclick = function() { 
                     loadVideo(subject, chapter, index + 1, videoId); 
-                    markVideoAsCompleted(videoId);
                 };
                 content.appendChild(link);
+
+                // Initialiser le Badge
+                let savedPercent = videoProgressData[videoId] || 0;
+                if (savedPercent > 0) {
+                    updateSidebarBadge(videoId, savedPercent);
+                }
             });
         }
         subjectItem.appendChild(title);
         subjectItem.appendChild(content);
         treeContainer.appendChild(subjectItem);
     }
-    updateProgressBar();
 }
 
 function loadVideo(subject, chapter, index, id) {
@@ -287,24 +241,9 @@ function loadVideo(subject, chapter, index, id) {
     if (videoTitle) videoTitle.innerText = `${subject} ➔ ${chapter} (Séance ${index})`;
     if (playerReady && player && player.loadVideoById) player.loadVideoById(id);
 
-    // Update PDF links dynamically
-    const coursBtn = document.getElementById('pdfCoursBtn');
-    const seriesBtn = document.getElementById('pdfSeriesBtn');
-    const devoirsBtn = document.getElementById('pdfDevoirsBtn');
-
-    if (pdfResources[subject] && pdfResources[subject][chapter]) {
-        coursBtn.href = pdfResources[subject][chapter].cours || "#";
-        seriesBtn.href = pdfResources[subject][chapter].series || "#";
-        devoirsBtn.href = pdfResources[subject][chapter].devoirs || "#";
-
-        coursBtn.style.display = (pdfResources[subject][chapter].cours !== "#") ? "inline-flex" : "none";
-        seriesBtn.style.display = (pdfResources[subject][chapter].series !== "#") ? "inline-flex" : "none";
-        devoirsBtn.style.display = (pdfResources[subject][chapter].devoirs !== "#") ? "inline-flex" : "none";
-    } else {
-        coursBtn.style.display = "none";
-        seriesBtn.style.display = "none";
-        devoirsBtn.style.display = "none";
-    }
+    // Charge la progression enregistrée
+    let savedPercent = videoProgressData[id] || 0;
+    renderProgressBarUI(savedPercent);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
