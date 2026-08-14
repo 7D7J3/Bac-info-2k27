@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programmation - Vidéos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <a href="index.html" class="back-btn">← Arje3 l-el-Main Page</a>
+  <h1>Programmation</h1>
+
+  <div class="player-wrapper">
+    <div class="video-container" id="video-box">
+      <div id="player"></div>
+    </div>
+    
+    <div class="controls">
+      <button onclick="changeTime(-10)">-10s</button>
+      <button onclick="changeTime(10)">+10s</button>
+      <button class="fullscreen" onclick="toggleFullscreen()">Full Screen</button>
+    </div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    var player;
+    var YOUTUBE_ID = 'dQw4w9WgXcQ'; // BADDEL CODE EL-VIDEO HNA
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        videoId: YOUTUBE_ID,
+        playerVars: { 'enablejsapi': 1 }
+      });
+    }
+
+    function changeTime(seconds) {
+      if(player && player.getCurrentTime) {
+        player.seekTo(player.getCurrentTime() + seconds, true);
+      }
+    }
+
+    function toggleFullscreen() {
+      var elem = document.getElementById('video-box');
+      if (elem.requestFullscreen) elem.requestFullscreen();
+      else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+    }
+  </script>
+</body>
+</html>
