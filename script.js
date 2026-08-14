@@ -62,6 +62,7 @@ function checkMidnightLogout() {
 setInterval(checkMidnightLogout, 10000);
 
 function logoutUser() {
+    // Na7ina kan el-Session Active, ama n5allou el-Email m3awedch yotlob code
     localStorage.removeItem('bacInfoAccessGranted');
     localStorage.removeItem('loginDate');
     location.reload();
@@ -78,6 +79,7 @@ var isPlaying = false;
 var playerReady = false;
 let isUserDragging = false;
 let generatedCode = "";
+let currentEmailAttempt = "";
 let currentVideoId = "";
 let progressTimer = null;
 const speeds = [1, 1.25, 1.5, 1.75, 2];
@@ -166,7 +168,7 @@ function updateUIProgress(current, duration, percentage) {
 document.addEventListener('DOMContentLoaded', function() {
     checkMidnightLogout();
 
-    // Logout Button Event Listener
+    // Logout Button
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
@@ -254,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (rewindBtn) rewindBtn.addEventListener('click', () => seekRelative(-10));
     if (forwardBtn) forwardBtn.addEventListener('click', () => seekRelative(10));
 
-    // Login Form
+    // Smart Login Logic (M3awadch yob3ath Code)
     const loginForm = document.getElementById('loginForm');
     const codeForm = document.getElementById('codeForm');
 
@@ -262,9 +264,23 @@ document.addEventListener('DOMContentLoaded', function() {
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const name = document.getElementById('userName').value.trim();
-            const email = document.getElementById('userEmail').value.trim();
+            const email = document.getElementById('userEmail').value.trim().toLowerCase();
             const pass = document.getElementById('userPass').value.trim();
             
+            currentEmailAttempt = email;
+            
+            // Lista mta3 les emails verified déjà fi-el-browser
+            let verifiedEmails = JSON.parse(localStorage.getItem('verifiedEmails') || "[]");
+
+            // Kan el-email déjà validé marra 9dima, yedkhol directement بلا ما يبعث Code!
+            if (verifiedEmails.includes(email)) {
+                localStorage.setItem('bacInfoAccessGranted', 'true');
+                localStorage.setItem('loginDate', new Date().toDateString());
+                unlockPlatform();
+                return;
+            }
+
+            // Kan Email جديد، يبعثلو Code
             generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
             
             fetch(SCRIPT_URL, {
@@ -287,6 +303,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const enteredCode = document.getElementById('verificationCodeInput').value.trim();
 
             if (enteredCode === generatedCode) {
+                // Nsajlo el-email fi قائمة المجلين
+                let verifiedEmails = JSON.parse(localStorage.getItem('verifiedEmails') || "[]");
+                if (!verifiedEmails.includes(currentEmailAttempt)) {
+                    verifiedEmails.push(currentEmailAttempt);
+                    localStorage.setItem('verifiedEmails', JSON.stringify(verifiedEmails));
+                }
+
                 localStorage.setItem('bacInfoAccessGranted', 'true');
                 localStorage.setItem('loginDate', new Date().toDateString());
                 unlockPlatform();
