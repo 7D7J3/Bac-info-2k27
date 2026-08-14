@@ -39,7 +39,7 @@ const coursesData = {
     }
 };
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby4z0sCAHqyVMz29LMQg3BctYCKyUohPGFXr_az8UGQtUGqB1mDoQok4u94G-mbwJsn/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhoph6LuatmX5aPrX04oWximq3605b-P3bwn8bh9pziecZv0d5flfH3HzWwNWq_b_O/exec";
 
 // Anti-Inspect Protection
 document.addEventListener('contextmenu', e => e.preventDefault());
@@ -56,11 +56,16 @@ function checkMidnightLogout() {
     const todayDate = new Date().toDateString();
     
     if (lastLoginDate && lastLoginDate !== todayDate) {
-        localStorage.clear();
-        location.reload();
+        logoutUser();
     }
 }
-setInterval(checkMidnightLogout, 10000); // Check every 10 seconds
+setInterval(checkMidnightLogout, 10000);
+
+function logoutUser() {
+    localStorage.removeItem('bacInfoAccessGranted');
+    localStorage.removeItem('loginDate');
+    location.reload();
+}
 
 // Load YouTube API
 var tag = document.createElement('script');
@@ -85,22 +90,24 @@ function onYouTubeIframeAPIReady() {
         currentVideoId = coursesData[currentSubject][firstChapter][0];
     }
 
-    player = new YT.Player('player', {
-        height: '100%',
-        width: '100%',
-        videoId: currentVideoId || 'K5JXPhnLRgk',
-        playerVars: { 
-            'controls': 0, 
-            'disablekb': 1, 
-            'modestbranding': 1, 
-            'rel': 0, 
-            'playsinline': 1 
-        },
-        events: { 
-            'onReady': () => playerReady = true, 
-            'onStateChange': onPlayerStateChange 
-        }
-    });
+    if (document.getElementById('player')) {
+        player = new YT.Player('player', {
+            height: '100%',
+            width: '100%',
+            videoId: currentVideoId || 'K5JXPhnLRgk',
+            playerVars: { 
+                'controls': 0, 
+                'disablekb': 1, 
+                'modestbranding': 1, 
+                'rel': 0, 
+                'playsinline': 1 
+            },
+            events: { 
+                'onReady': () => playerReady = true, 
+                'onStateChange': onPlayerStateChange 
+            }
+        });
+    }
 }
 
 function onPlayerStateChange(event) {
@@ -155,9 +162,19 @@ function updateUIProgress(current, duration, percentage) {
     }
 }
 
-// Tree Generation for Sidebar
+// Initialization
 document.addEventListener('DOMContentLoaded', function() {
     checkMidnightLogout();
+
+    // Logout Button Event Listener
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+            if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                logoutUser();
+            }
+        });
+    }
 
     const currentSubject = document.body.getAttribute('data-subject');
     const treeContainer = document.getElementById('subjectTree');
@@ -237,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (rewindBtn) rewindBtn.addEventListener('click', () => seekRelative(-10));
     if (forwardBtn) forwardBtn.addEventListener('click', () => seekRelative(10));
 
-    // Login Form Logic
+    // Login Form
     const loginForm = document.getElementById('loginForm');
     const codeForm = document.getElementById('codeForm');
 
