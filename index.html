@@ -1,74 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plateforme Bac Info</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bac - Matières</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Modal d'accès -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <h2>Accès à la Plateforme</h2>
-            <form id="loginForm">
-                <input type="text" id="userName" placeholder="Nom et Prénom" required>
-                <input type="email" id="userEmail" placeholder="Adresse Email" required>
-                <button type="submit">Demander l'accès</button>
-            </form>
+  <h1>Ekhtar el-Matière</h1>
 
-            <form id="codeForm" style="display: none;">
-                <p id="codeInfoText"></p>
-                <input type="text" id="verificationCodeInput" placeholder="Entrez le code" required>
-                <button type="submit">Valider le code</button>
-            </form>
-        </div>
-    </div>
+  <div class="grid-container">
+    <a href="math.html" class="card">
+      <h2>Mathématiques</h2>
+      <p>Vidéos & Cours Math</p>
+    </a>
 
-    <div class="app-container">
-        <!-- Sidebar Navigation -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h3>Bac-Info 3al-Tayer ✨ </h3>
-                <span id="accessStatus" class="status-locked">🔒 Accès Restreint</span>
-            </div>
-            <div id="subjectTree" class="tree-container"></div>
-        </div>
+    <a href="physique.html" class="card">
+      <h2>Physique</h2>
+      <p>Vidéos & Cours Physique</p>
+    </a>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <h2 id="videoTitle">Sélectionnez une séance</h2>
-            
-            <div class="player-wrapper">
-                <div id="player"></div>
-                <!-- Layer kamel fou9 el iframe bech yemna3 el click el direct -->
-                <div id="videoOverlay" class="video-overlay"></div>
-            </div>
+    <a href="prog.html" class="card">
+      <h2>Programmation</h2>
+      <p>Vidéos & Cours Algo/Prog</p>
+    </a>
 
-            <!-- Interactive Seek Bar -->
-            <div class="progress-container">
-                <div class="progress-info">
-                    <span>Progression de la vidéo :</span>
-                    <span id="progressText">0%</span>
-                </div>
-                <input type="range" id="progressBar" min="0" max="100" value="0" step="0.1">
-            </div>
+    <a href="sti-omar.html" class="card">
+      <h2>STI (Version Omar)</h2>
+      <p>Vidéos STI Prof Omar</p>
+    </a>
 
-            <!-- Custom Controls Bar -->
-            <div class="controls-bar">
-                <button id="rewindBtn">⏮ -10s</button>
-                <button id="playPauseBtn">▶ / ⏸</button>
-                <button id="forwardBtn">+10s ⏭</button>
-                <button id="speedBtn" class="control-btn">⚡ 1x</button>
-                <button id="fullscreenBtn" class="control-btn">⛶ Plein Écran</button>
-                
-                <span id="playerStatus">⏸ En pause</span>
-                <button onclick="notifyPdfDownload()" class="pdf-btn">📄 Support PDF</button>
-            </div>
-        </div>
-    </div>
+    <a href="sti-salma.html" class="card">
+      <h2>STI (Version Salma)</h2>
+      <p>Vidéos STI Prof Salma</p>
+    </a>
+  </div>
 
-    <script src="script.js"></script>
 </body>
 </html>
