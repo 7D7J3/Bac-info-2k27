@@ -1,308 +1,116 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background-color: #0f172a;
-    color: #f8fafc;
-    min-height: 100vh;
-    overflow-x: hidden;
-    user-select: none;
-    -webkit-user-select: none;
+  background-color: #0f172a;
+  color: #f8fafc;
+  padding: 30px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
 }
 
-.app-container {
-    display: flex;
-    height: 100vh;
+h1 {
+  margin-bottom: 25px;
+  font-size: 2rem;
+  text-align: center;
+  color: #38bdf8;
 }
 
-/* Sidebar Styling */
-.sidebar {
-    width: 380px;
-    background-color: #1e293b;
-    border-right: 1px solid #334155;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+/* Index Page Cards */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1000px;
 }
 
-.sidebar-header {
-    padding: 20px;
-    background-color: #0f172a;
-    border-bottom: 1px solid #334155;
+.card {
+  background-color: #1e293b;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  padding: 25px 15px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.sidebar-header h3 {
-    color: #38bdf8;
-    margin-bottom: 5px;
+.card:hover {
+  transform: translateY(-5px);
+  border-color: #38bdf8;
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
 }
 
-.status-locked { color: #f87171; font-size: 13px; }
-.status-unlocked { color: #4ade80; font-size: 13px; }
+.card h2 { font-size: 1.4rem; margin-bottom: 10px; }
+.card p { font-size: 0.85rem; color: #94a3b8; text-align: center; }
 
-.tree-container {
-    padding: 10px;
-}
-
-.accordion-item {
-    margin-bottom: 8px;
-    border-radius: 6px;
-    background-color: #0f172a;
-    overflow: hidden;
-}
-
-.accordion-title {
-    padding: 12px 15px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    background-color: #1e293b;
-    color: #e2e8f0;
-    transition: 0.2s;
-}
-
-.accordion-title:hover {
-    background-color: #334155;
-}
-
-.accordion-content {
-    display: none;
-    padding: 10px;
-}
-
-.accordion-content.active {
-    display: block;
-}
-
-.chapter-heading {
-    font-size: 13px;
-    color: #38bdf8;
-    font-weight: bold;
-    margin: 10px 0 5px 5px;
-    text-transform: uppercase;
-}
-
-.video-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    color: #94a3b8;
-    text-decoration: none;
-    font-size: 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 3px;
-    transition: 0.2s;
-}
-
-.video-link:hover, .video-link.active-link {
-    background-color: #334155;
-    color: #ffffff;
-}
-
-/* Badges */
-.badge-status {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-weight: bold;
-    color: #fff;
-}
-
-.badge-red { background-color: #ef4444; }
-.badge-orange { background-color: #f97316; }
-.badge-green { background-color: #22c55e; }
-
-/* Main Content */
-.main-content {
-    flex: 1;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+/* Video Pages */
+.back-btn {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: bold;
+  align-self: flex-start;
+  margin-bottom: 20px;
+  max-width: 900px;
+  width: 100%;
 }
 
 .player-wrapper {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%;
-    background: #000;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  width: 100%;
+  max-width: 850px;
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #334155;
 }
 
-.player-wrapper iframe, #player {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* Ratio 16:9 */
+  height: 0;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
-.video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    cursor: pointer;
-    background: rgba(0, 0, 0, 0.001);
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
-/* Interactive Seek Bar */
-.progress-container {
-    background: #1e293b;
-    padding: 12px 18px;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    color: #94a3b8;
-}
-
-input[type=range]#progressBar {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 6px;
-    background: #334155;
-    border-radius: 4px;
-    outline: none;
-    cursor: pointer;
-}
-
-input[type=range]#progressBar::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #ef4444;
-    cursor: pointer;
-    transition: transform 0.1s ease-in-out;
-}
-
-input[type=range]#progressBar::-webkit-slider-thumb:hover {
-    transform: scale(1.3);
-}
-
-/* Controls Bar */
-.controls-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background-color: #1e293b;
-    padding: 12px;
-    border-radius: 6px;
-    flex-wrap: wrap;
+/* Controls */
+.controls {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 button {
-    background-color: #38bdf8;
-    color: #0f172a;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
+  padding: 10px 18px;
+  cursor: pointer;
+  background: #0284c7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background 0.2s;
 }
 
-button:hover { background-color: #7dd3fc; }
-
-.control-btn {
-    background-color: #475569;
-    color: #fff;
-}
-.control-btn:hover { background-color: #64748b; }
-
-.pdf-btn {
-    margin-left: auto;
-    background-color: #f43f5e;
-    color: #fff;
-}
-.pdf-btn:hover { background-color: #fb7185; }
-
-/* Mode Fullscreen */
-.player-wrapper:fullscreen { width: 100vw; height: 100vh; padding-bottom: 0; }
-.player-wrapper:-webkit-full-screen { width: 100vw; height: 100vh; padding-bottom: 0; }
-.player-wrapper:-moz-full-screen { width: 100vw; height: 100vh; padding-bottom: 0; }
-
-/* Modal */
-.modal {
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    background: rgba(15, 23, 42, 0.95);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-}
-
-.modal-content {
-    background: #1e293b;
-    padding: 30px;
-    border-radius: 8px;
-    width: 350px;
-    text-align: center;
-}
-
-.modal-content input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 4px;
-    border: 1px solid #334155;
-    background: #0f172a;
-    color: #fff;
-}
-
-.modal-content button {
-    width: 100%;
-    margin-top: 10px;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .app-container {
-        flex-direction: column;
-        height: auto;
-        min-height: 100vh;
-    }
-
-    .sidebar {
-        width: 100% !important;
-        max-height: 280px;
-        border-right: none;
-        border-bottom: 2px solid #334155;
-    }
-
-    .main-content {
-        padding: 15px;
-        width: 100%;
-    }
-
-    .controls-bar {
-        justify-content: center;
-    }
-
-    .pdf-btn {
-        margin-left: 0;
-        width: 100%;
-        margin-top: 5px;
-    }
-}
+button:hover { background: #0369a1; }
+button.fullscreen { background: #334155; }
+button.fullscreen:hover { background: #475569; }
