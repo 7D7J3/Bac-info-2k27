@@ -80,6 +80,7 @@ var playerReady = false;
 let isUserDragging = false;
 let generatedCode = "";
 let currentEmailAttempt = "";
+let currentNameAttempt = ""; // 👈 تزادت لحفظ الاسم مؤقتاً
 let currentVideoId = "";
 let progressTimer = null;
 const speeds = [1, 1.25, 1.5, 1.75, 2];
@@ -167,6 +168,13 @@ function updateUIProgress(current, duration, percentage) {
 // Initialization
 document.addEventListener('DOMContentLoaded', function() {
     checkMidnightLogout();
+
+    // 👈 إظهار اسم المستخدم في الصفحة عند التحميل تلقائياً
+    const savedName = localStorage.getItem('userName') || 'Élève';
+    const nameSpan = document.getElementById('usernameDisplay');
+    if (nameSpan) {
+        nameSpan.textContent = savedName;
+    }
 
     // Logout Button
     const logoutBtn = document.getElementById('logoutBtn');
@@ -268,6 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const pass = document.getElementById('userPass').value.trim();
             
             currentEmailAttempt = email;
+            currentNameAttempt = name; // 👈 حفظ الاسم المدخل
             
             // Lista mta3 les emails verified déjà fi-el-browser
             let verifiedEmails = JSON.parse(localStorage.getItem('verifiedEmails') || "[]");
@@ -276,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (verifiedEmails.includes(email)) {
                 localStorage.setItem('bacInfoAccessGranted', 'true');
                 localStorage.setItem('loginDate', new Date().toDateString());
+                localStorage.setItem('userName', name); // 👈1. حفظ الاسم في حالة الدخول المباشر
                 unlockPlatform();
                 return;
             }
@@ -312,6 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 localStorage.setItem('bacInfoAccessGranted', 'true');
                 localStorage.setItem('loginDate', new Date().toDateString());
+                localStorage.setItem('userName', currentNameAttempt || 'Élève'); // 👈2. حفظ الاسم عند إدخال الكود الصحيح
                 unlockPlatform();
             } else {
                 alert("Code incorrect ! Contactez l'administrateur.");
