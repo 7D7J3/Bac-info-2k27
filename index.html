@@ -3,67 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bac-Info 3al-Tayer - Accueil</title>
+    <title>Bac-Info 3al-Tayer</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
 </head>
 <body>
 
-    <!-- Header / Navbar b-زر Logout kan hna -->
+    <!-- Header -->
     <header class="main-header">
         <div class="logo">
-            ⚡ <span>Bac-Info 3al-Tayer</span>
+            ⚡ Bac-Info 3al-Tayer
         </div>
-        <button id="logoutBtn" class="logout-btn">🔒 Déconnexion</button>
+        <button class="logout-btn" onclick="logout()">Déconnexion</button>
     </header>
 
-    <main class="home-container">
-        <h1>Bienvenue sur la plateforme Bac-Info 3al-Tayer</h1>
+    <!-- Main Content Container -->
+    <div class="home-container">
+        
+        <!-- Welcome Title with Dynamic Name -->
+        <h1 id="welcomeMessage">
+            Bienvenue <span id="usernameDisplay" style="color: #38bdf8; font-weight: bold;"></span> sur la plateforme Bac-Info 3al-Tayer
+        </h1>
+        
         <p>Sélectionnez une matière pour commencer la révision :</p>
 
+        <!-- Subjects Grid -->
         <div class="subjects-grid">
-            <a href="prog.html" class="subject-card">
+            <a href="algo.html" class="subject-card">
                 <h2>💻 Algo & Prog</h2>
                 <p>194 Vidéos & Exercices</p>
             </a>
+
             <a href="math.html" class="subject-card">
                 <h2>📐 Mathématiques</h2>
                 <p>Cours et révision T1, T2, T3</p>
             </a>
+
             <a href="physique.html" class="subject-card">
                 <h2>⚡ Physique & Chimie</h2>
                 <p>Résumé & Exercices corrigés</p>
             </a>
-            <a href="sti-salma.html" class="subject-card">
+
+            <a href="sti.html" class="subject-card">
                 <h2>🌐 STI (Mme Salma)</h2>
                 <p>BD, Web, Pratique & Théorique</p>
             </a>
-            <a href="sti-omar.html" class="subject-card">
-                <h2>🛠️ STI (Mr Omar)</h2>
-                <p>SGBD, PHP, JS & Révision</p>
-            </a>
         </div>
-    </main>
 
-    <!-- Modal mta3 Login / Formulaire -->
-    <div id="loginModal" class="modal-overlay">
-        <div class="modal-card">
-            <h2>Accès à la plateforme</h2>
-            
-            <form id="loginForm">
-                <input type="text" id="userName" placeholder="Votre Nom et Prénom" required>
-                <input type="email" id="userEmail" placeholder="Votre Email" required>
-                <input type="password" id="userPass" placeholder="Mot de passe" required>
-                <button type="submit">Recevoir le code d'accès</button>
-            </form>
-
-            <form id="codeForm" style="display:none;">
-                <p class="info-text">Un code à 6 chiffres a été envoyé à votre adresse e-mail.</p>
-                <input type="text" id="verificationCodeInput" placeholder="Entrez le code à 6 chiffres" required maxlength="6">
-                <button type="submit">Valider et Accéder</button>
-            </form>
-        </div>
     </div>
 
+    <script src="script.js"></script>
 </body>
 </html>
