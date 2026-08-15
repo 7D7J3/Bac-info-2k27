@@ -345,18 +345,25 @@ body {
 /* Responsive adjustments for Mobile Screen */
 @media (max-width: 768px) {
     .app-container {
+        display: flex;
         flex-direction: column;
     }
 
-    .sidebar {
+    /* 1. الـ Content Area (الـ Player) يطلع الفوق هو الأوّل */
+    .content-area {
+        order: 1;
+        padding: 0.8rem 0.5rem;
         width: 100%;
-        max-height: 200px;
-        border-right: none;
-        border-bottom: 1px solid #334155;
     }
 
-    .content-area {
-        padding: 0.8rem 0.5rem;
+    /* 2. الـ Sidebar تهبط لوتة تحته */
+    .sidebar {
+        order: 2;
+        width: 100%;
+        max-height: 250px;
+        border-right: none;
+        border-top: 2px solid #334155;
+        margin-top: 1rem;
     }
 
     #videoTitle {
