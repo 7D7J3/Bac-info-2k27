@@ -62,9 +62,9 @@ function checkMidnightLogout() {
 setInterval(checkMidnightLogout, 10000);
 
 function logoutUser() {
-    // Na7ina kan el-Session Active, ama n5allou el-Email m3awedch yotlob code
     localStorage.removeItem('bacInfoAccessGranted');
     localStorage.removeItem('loginDate');
+    localStorage.removeItem('userName');
     location.reload();
 }
 
@@ -80,7 +80,7 @@ var playerReady = false;
 let isUserDragging = false;
 let generatedCode = "";
 let currentEmailAttempt = "";
-let currentNameAttempt = ""; // 👈 تزادت لحفظ الاسم مؤقتاً
+let currentNameAttempt = "";
 let currentVideoId = "";
 let progressTimer = null;
 const speeds = [1, 1.25, 1.5, 1.75, 2];
@@ -165,16 +165,31 @@ function updateUIProgress(current, duration, percentage) {
     }
 }
 
+// Display Name Function
+function updateDisplayName() {
+    const nameSpan = document.getElementById('usernameDisplay');
+    const savedName = localStorage.getItem('userName');
+    
+    if (nameSpan) {
+        if (savedName && savedName !== 'Élève') {
+            nameSpan.textContent = savedName;
+        } else {
+            // Kan maffama3ch اسم، يطلب منه كتابة اسمه
+            let promptName = prompt("Entrez votre nom pour l'afficher sur la plateforme :");
+            if (promptName && promptName.trim() !== "") {
+                localStorage.setItem('userName', promptName.trim());
+                nameSpan.textContent = promptName.trim();
+            } else {
+                nameSpan.textContent = 'Élève';
+            }
+        }
+    }
+}
+
 // Initialization
 document.addEventListener('DOMContentLoaded', function() {
     checkMidnightLogout();
-
-    // 👈 إظهار اسم المستخدم في الصفحة عند التحميل تلقائياً
-    const savedName = localStorage.getItem('userName') || 'Élève';
-    const nameSpan = document.getElementById('usernameDisplay');
-    if (nameSpan) {
-        nameSpan.textContent = savedName;
-    }
+    updateDisplayName();
 
     // Logout Button
     const logoutBtn = document.getElementById('logoutBtn');
@@ -264,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (rewindBtn) rewindBtn.addEventListener('click', () => seekRelative(-10));
     if (forwardBtn) forwardBtn.addEventListener('click', () => seekRelative(10));
 
-    // Smart Login Logic (M3awadch yob3ath Code)
+    // Smart Login Logic
     const loginForm = document.getElementById('loginForm');
     const codeForm = document.getElementById('codeForm');
 
@@ -276,21 +291,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const pass = document.getElementById('userPass').value.trim();
             
             currentEmailAttempt = email;
-            currentNameAttempt = name; // 👈 حفظ الاسم المدخل
+            currentNameAttempt = name;
             
-            // Lista mta3 les emails verified déjà fi-el-browser
             let verifiedEmails = JSON.parse(localStorage.getItem('verifiedEmails') || "[]");
 
-            // Kan el-email déjà validé marra 9dima, yedkhol directement بلا ما يبعث Code!
             if (verifiedEmails.includes(email)) {
                 localStorage.setItem('bacInfoAccessGranted', 'true');
                 localStorage.setItem('loginDate', new Date().toDateString());
-                localStorage.setItem('userName', name); // 👈1. حفظ الاسم في حالة الدخول المباشر
+                localStorage.setItem('userName', name);
+                updateDisplayName();
                 unlockPlatform();
                 return;
             }
 
-            // Kan Email جديد، يبعثلو Code
             generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
             
             fetch(SCRIPT_URL, {
@@ -313,7 +326,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const enteredCode = document.getElementById('verificationCodeInput').value.trim();
 
             if (enteredCode === generatedCode) {
-                // Nsajlo el-email fi قائمة المجلين
                 let verifiedEmails = JSON.parse(localStorage.getItem('verifiedEmails') || "[]");
                 if (!verifiedEmails.includes(currentEmailAttempt)) {
                     verifiedEmails.push(currentEmailAttempt);
@@ -322,7 +334,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 localStorage.setItem('bacInfoAccessGranted', 'true');
                 localStorage.setItem('loginDate', new Date().toDateString());
-                localStorage.setItem('userName', currentNameAttempt || 'Élève'); // 👈2. حفظ الاسم عند إدخال الكود الصحيح
+                localStorage.setItem('userName', currentNameAttempt || 'Élève');
+                updateDisplayName();
                 unlockPlatform();
             } else {
                 alert("Code incorrect ! Contactez l'administrateur.");
