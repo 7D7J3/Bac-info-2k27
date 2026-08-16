@@ -39,7 +39,8 @@ const coursesData = {
     }
 };
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhoph6LuatmX5aPrX04oWximq3605b-P3bwn8bh9pziecZv0d5flfH3HzWwNWq_b_O/exec";
+// URL الجديد متاع الـ Apps Script
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwn8iyhAKskuD1QrVi3nnXAuTXmA05uwiggdTc49X7HVAg5ra75cVaZcUzhn1hZbOQ/exec";
 
 // Anti-Inspect Protection
 document.addEventListener('contextmenu', e => e.preventDefault());
@@ -174,7 +175,6 @@ function updateDisplayName() {
         if (savedName && savedName !== 'Élève') {
             nameSpan.textContent = savedName;
         } else {
-            // Kan maffama3ch اسم، يطلب منه كتابة اسمه
             let promptName = prompt("Entrez votre nom pour l'afficher sur la plateforme :");
             if (promptName && promptName.trim() !== "") {
                 localStorage.setItem('userName', promptName.trim());
@@ -304,13 +304,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            // إيجاد كود جديد
             generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
             
+            // بعث المعطيات + الكود للـ Apps Script
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: name, email: email, password: pass, code: generatedCode })
+                body: JSON.stringify({ 
+                    name: name, 
+                    email: email, 
+                    password: pass, 
+                    code: generatedCode 
+                })
             }).then(() => {
                 loginForm.style.display = 'none';
                 codeForm.style.display = 'block';
