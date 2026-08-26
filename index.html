@@ -8,22 +8,41 @@
 </head>
 <body>
 
+    <!-- Login / Verification Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <h2>Connexion Bac Info</h2>
+            <form id="loginForm">
+                <div class="input-group"><label>Nom & Prénom</label><input type="text" id="userName" required></div>
+                <div class="input-group"><label>Email</label><input type="email" id="userEmail" required></div>
+                <div class="input-group"><label>Mot de passe</label><input type="password" id="userPass" required></div>
+                <button type="submit">Demander Code Access</button>
+            </form>
+
+            <form id="codeForm" style="display:none;">
+                <p style="margin-bottom:10px; font-size:0.85rem; color:#94a3b8;">Entrez le code fourni par l'admin:</p>
+                <div class="input-group"><label>Code d'accès</label><input type="text" id="verificationCodeInput" required></div>
+                <button type="submit">Valider & Entrer</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="main-header">
         <div class="logo">
             ⚡ Bac-Info 3al-Tayer
         </div>
-        <button class="logout-btn" onclick="logout()">Déconnexion</button>
+        <button class="logout-btn" id="logoutBtn">Déconnexion</button>
     </header>
 
     <!-- Main Content Container -->
     <div class="home-container">
-        
+
         <!-- Welcome Title with Dynamic Name -->
         <h1 id="welcomeMessage">
             Bienvenue <span id="usernameDisplay" style="color: #38bdf8; font-weight: bold;"></span> sur la plateforme Bac-Info 3al-Tayer
         </h1>
-        
+
         <p>Sélectionnez une matière pour commencer la révision :</p>
 
         <!-- Subjects Grid -->
