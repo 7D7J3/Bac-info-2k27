@@ -55,7 +55,7 @@ document.addEventListener('keydown', e => {
 function checkMidnightLogout() {
     const lastLoginDate = localStorage.getItem('loginDate');
     const todayDate = new Date().toDateString();
-    
+
     if (lastLoginDate && lastLoginDate !== todayDate) {
         logoutUser();
     }
@@ -99,16 +99,16 @@ function onYouTubeIframeAPIReady() {
             height: '100%',
             width: '100%',
             videoId: currentVideoId || 'K5JXPhnLRgk',
-            playerVars: { 
-                'controls': 0, 
-                'disablekb': 1, 
-                'modestbranding': 1, 
-                'rel': 0, 
-                'playsinline': 1 
+            playerVars: {
+                'controls': 0,
+                'disablekb': 1,
+                'modestbranding': 1,
+                'rel': 0,
+                'playsinline': 1
             },
-            events: { 
-                'onReady': () => playerReady = true, 
-                'onStateChange': onPlayerStateChange 
+            events: {
+                'onReady': () => playerReady = true,
+                'onStateChange': onPlayerStateChange
             }
         });
     }
@@ -130,7 +130,7 @@ function startTrackingProgress() {
         if (!isUserDragging && playerReady && player && typeof player.getCurrentTime === 'function' && typeof player.getDuration === 'function') {
             const currentTime = player.getCurrentTime();
             const duration = player.getDuration();
-            
+
             if (duration > 0) {
                 const percentage = (currentTime / duration) * 100;
                 updateUIProgress(currentTime, duration, percentage);
@@ -166,23 +166,14 @@ function updateUIProgress(current, duration, percentage) {
     }
 }
 
-// Display Name Function
+// Display Name Function — n7ib fih w yestaamel ki l'esm mawjoud fi localStorage
+// (jeya mel login form), 3adech ma fama prompt() ki ma fama esm.
 function updateDisplayName() {
     const nameSpan = document.getElementById('usernameDisplay');
     const savedName = localStorage.getItem('userName');
-    
+
     if (nameSpan) {
-        if (savedName && savedName !== 'Élève') {
-            nameSpan.textContent = savedName;
-        } else {
-            let promptName = prompt("Entrez votre nom pour l'afficher sur la plateforme :");
-            if (promptName && promptName.trim() !== "") {
-                localStorage.setItem('userName', promptName.trim());
-                nameSpan.textContent = promptName.trim();
-            } else {
-                nameSpan.textContent = 'Élève';
-            }
-        }
+        nameSpan.textContent = (savedName && savedName.trim() !== '') ? savedName.trim() : 'Élève';
     }
 }
 
@@ -289,10 +280,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const name = document.getElementById('userName').value.trim();
             const email = document.getElementById('userEmail').value.trim().toLowerCase();
             const pass = document.getElementById('userPass').value.trim();
-            
+
             currentEmailAttempt = email;
             currentNameAttempt = name;
-            
+
             let verifiedEmails = JSON.parse(localStorage.getItem('verifiedEmails') || "[]");
 
             if (verifiedEmails.includes(email)) {
@@ -306,17 +297,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // إيجاد كود جديد
             generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-            
+
             // بعث المعطيات + الكود للـ Apps Script
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    name: name, 
-                    email: email, 
-                    password: pass, 
-                    code: generatedCode 
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: pass,
+                    code: generatedCode
                 })
             }).then(() => {
                 loginForm.style.display = 'none';
