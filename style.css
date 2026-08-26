@@ -156,28 +156,61 @@ header h1::before{ content:"▸"; color:var(--accent-warm); }
   text-decoration:none;
   text-align:left;
   display:block;
-  transition:transform .2s ease, border-color .2s ease;
+  transition:transform .2s ease, border-color .2s ease, background .2s ease;
 }
 .subject-card::before{
   content:"";
   position:absolute; top:0; left:0; width:3px; height:100%;
-  background:var(--accent);
-  opacity:0;
+  background:var(--card-accent, var(--accent));
+  opacity:.6;
   transition:opacity .2s ease;
 }
-.subject-card:hover{ transform:translateY(-4px); border-color:var(--accent); }
+.subject-card:hover{ transform:translateY(-4px); border-color:var(--card-accent, var(--accent)); }
 .subject-card:hover::before{ opacity:1; }
+
+.subject-icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  border-radius:10px;
+  background:rgba(255,255,255,.06);
+  color:var(--card-accent, var(--accent));
+  margin-bottom:.9rem;
+}
+.subject-icon svg{ width:24px; height:24px; }
 
 .subject-card h2{
   font-family:var(--font-display);
   font-size:1.05rem;
-  color:var(--text);
+  color:var(--card-accent, var(--text));
   margin-bottom:.4rem;
 }
 .subject-card p{
   font-size:.85rem;
   color:var(--text-muted);
   margin:0;
+}
+
+/* Per-subject accent + tinted background (order matches the cards in index.html) */
+.subject-card:nth-child(1){ --card-accent:#4DD0C4; }   /* Algo & Prog   — teal   */
+.subject-card:nth-child(2){ --card-accent:#9B8CFB; }   /* Mathématiques — violet */
+.subject-card:nth-child(3){ --card-accent:#E8A23D; }   /* Physique      — amber  */
+.subject-card:nth-child(4){ --card-accent:#4FA3E3; }   /* STI Mme Salma — blue   */
+.subject-card:nth-child(5){ --card-accent:#34D399; }   /* STI Mr Omar   — green  */
+
+@supports (background: color-mix(in srgb, red 10%, blue)){
+  .subject-card{
+    background:
+      linear-gradient(165deg, color-mix(in srgb, var(--card-accent, var(--accent)) 12%, var(--panel)) 0%, var(--panel) 65%);
+  }
+  .subject-card:hover{
+    border-color: color-mix(in srgb, var(--card-accent, var(--accent)) 55%, var(--border));
+  }
+  .subject-icon{
+    background: color-mix(in srgb, var(--card-accent, var(--accent)) 18%, transparent);
+  }
 }
 
 /* =========================================================
