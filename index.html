@@ -29,8 +29,11 @@
 
     <!-- Header -->
     <header class="main-header">
-        <div class="logo">
-            ⚡ Bac-Info 3al-Tayer
+        <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+            <div class="logo">
+                ⚡ Bac-Info 3al-Tayer
+            </div>
+            <span class="countdown-chip"></span>
         </div>
         <button class="logout-btn" id="logoutBtn">Déconnexion</button>
     </header>
@@ -44,6 +47,13 @@
         </h1>
 
         <p>Sélectionnez une matière pour commencer la révision :</p>
+
+        <!-- Reprendre où j'étais -->
+        <div class="resume-banner" id="resumeBannerHome">
+            <span class="resume-text">▸ Reprendre : <strong id="resumeLabelHome"></strong></span>
+            <a id="resumeLinkHome" class="btn-resume" href="#">Continuer</a>
+        </div>
+
 
         <!-- Subjects Grid -->
         <div class="subjects-grid">
