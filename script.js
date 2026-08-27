@@ -42,6 +42,31 @@ const coursesData = {
 // URL الجديد متاع الـ Apps Script
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwn8iyhAKskuD1QrVi3nnXAuTXmA05uwiggdTc49X7HVAg5ra75cVaZcUzhn1hZbOQ/exec";
 
+// Mapping matière -> page (utilisé par le bandeau "Reprendre où j'étais" de l'accueil)
+const subjectPages = {
+    "Algo & Programmation": "prog.html",
+    "Mathématiques": "math.html",
+    "Physique & Chimie": "physique.html",
+    "STI (Mme Salma)": "sti-salma.html",
+    "STI (Mr Omar)": "sti-omar.html"
+};
+
+// URL du Web App Google Apps Script qui gère les NOTES PARTAGÉES (voir instructions fournies séparément)
+// Remplace la valeur ci-dessous par l'URL de ton propre déploiement Apps Script.
+const NOTES_SCRIPT_URL = "COLLEZ_ICI_VOTRE_URL_APPS_SCRIPT_NOTES";
+
+// Date du Bac (session Tunisie) — le ministère n'a pas encore publié le calendrier 2027,
+// cette date est une estimation à ajuster dès que le calendrier officiel sort.
+const BAC_DATE = new Date('2027-06-02T08:00:00');
+
+function updateBacCountdown() {
+    const chips = document.querySelectorAll('.countdown-chip');
+    if (!chips.length) return;
+    const diffDays = Math.ceil((BAC_DATE - new Date()) / 86400000);
+    const text = diffDays > 0 ? `⏳ J-${diffDays} avant le Bac` : `💪 Bonne chance pour le Bac !`;
+    chips.forEach(chip => chip.textContent = text);
+}
+
 // Anti-Inspect Protection
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('keydown', e => {
@@ -111,6 +136,7 @@ function onYouTubeIframeAPIReady() {
                 'onStateChange': onPlayerStateChange
             }
         });
+        loadNotesForVideo(currentVideoId || 'K5JXPhnLRgk');
     }
 }
 
@@ -344,7 +370,109 @@ document.addEventListener('DOMContentLoaded', function() {
     if (localStorage.getItem('bacInfoAccessGranted') === 'true') {
         unlockPlatform();
     }
+
+    // Note form (partagée avec tout le monde, avec le nom de l'auteur)
+    const noteForm = document.getElementById('noteForm');
+    if (noteForm) {
+        noteForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('noteInput');
+            const text = input.value.trim();
+            if (!text || !currentVideoId) return;
+            const name = localStorage.getItem('userName') || 'Élève';
+
+            fetch(NOTES_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ videoId: currentVideoId, name: name, text: text })
+            }).then(() => {
+                input.value = '';
+                loadNotesForVideo(currentVideoId);
+            }).catch(() => alert("Erreur lors de l'envoi de la note."));
+        });
+    }
+
+    showResumeBannerIfAny();
+    showHomeResumeBanner();
+    updateBacCountdown();
 });
+
+// ---------- "Reprendre où j'étais" ----------
+function saveResumePoint(chapter, index, videoId) {
+    const subject = document.body.getAttribute('data-subject');
+    if (!subject) return;
+    const point = { subject, chapter, index, videoId, ts: Date.now() };
+    localStorage.setItem('lastWatched_' + subject, JSON.stringify(point));
+    localStorage.setItem('lastWatchedGlobal', JSON.stringify(point));
+}
+
+function showResumeBannerIfAny() {
+    const subject = document.body.getAttribute('data-subject');
+    const banner = document.getElementById('resumeBanner');
+    if (!subject || !banner) return;
+    const raw = localStorage.getItem('lastWatched_' + subject);
+    if (!raw) return;
+    try {
+        const point = JSON.parse(raw);
+        document.getElementById('resumeLabel').textContent = `${point.chapter} — Séance ${point.index}`;
+        banner.style.display = 'flex';
+        document.getElementById('resumeBtn').onclick = function() {
+            const badge = document.getElementById('badge-' + point.videoId);
+            const linkEl = badge ? badge.closest('.video-link') : null;
+            loadVideo(point.chapter, point.index, point.videoId, linkEl);
+            banner.style.display = 'none';
+        };
+    } catch (e) { /* données corrompues, on ignore */ }
+}
+
+function showHomeResumeBanner() {
+    const banner = document.getElementById('resumeBannerHome');
+    if (!banner) return;
+    const raw = localStorage.getItem('lastWatchedGlobal');
+    if (!raw) return;
+    try {
+        const point = JSON.parse(raw);
+        const page = subjectPages[point.subject];
+        if (!page) return;
+        document.getElementById('resumeLabelHome').textContent = `${point.subject} — ${point.chapter} — Séance ${point.index}`;
+        document.getElementById('resumeLinkHome').href = page;
+        banner.style.display = 'flex';
+    } catch (e) { /* données corrompues, on ignore */ }
+}
+
+// ---------- Notes partagées (visibles par tout le monde, avec nom de l'auteur) ----------
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+}
+
+function loadNotesForVideo(videoId) {
+    const list = document.getElementById('notesList');
+    if (!list) return;
+
+    if (!NOTES_SCRIPT_URL || NOTES_SCRIPT_URL.indexOf('COLLEZ_ICI') === 0) {
+        list.innerHTML = '<p class="notes-empty">Notes partagées pas encore configurées côté admin.</p>';
+        return;
+    }
+
+    list.innerHTML = '<p class="notes-empty">Chargement des notes...</p>';
+    fetch(NOTES_SCRIPT_URL + '?videoId=' + encodeURIComponent(videoId))
+        .then(res => res.json())
+        .then(notes => {
+            if (!notes || !notes.length) {
+                list.innerHTML = '<p class="notes-empty">Aucune note pour cette séance — sois le premier à en ajouter une !</p>';
+                return;
+            }
+            list.innerHTML = notes.map(n => `
+                <div class="note-item">
+                    <span class="note-author">${escapeHtml(n.name || 'Élève')}</span>
+                    <p class="note-text">${escapeHtml(n.text)}</p>
+                </div>
+            `).join('');
+        })
+        .catch(() => { list.innerHTML = '<p class="notes-empty">Impossible de charger les notes pour le moment.</p>'; });
+}
 
 function loadVideo(chapter, index, id, element) {
     currentVideoId = id;
@@ -357,6 +485,9 @@ function loadVideo(chapter, index, id, element) {
     if (playerReady && player && player.loadVideoById) {
         player.loadVideoById(id);
     }
+
+    saveResumePoint(chapter, index, id);
+    loadNotesForVideo(id);
 }
 
 function seekRelative(seconds) {
