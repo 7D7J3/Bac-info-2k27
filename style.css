@@ -524,3 +524,149 @@ header h1::before{ content:"▸"; color:var(--accent-warm); }
 
   .buttons-box button{ padding:.42rem .65rem; font-size:.7rem; }
 }
+
+/* =========================================================
+   Countdown chip (Bac motivation)
+   ========================================================= */
+.countdown-chip{
+  font-family:var(--font-display);
+  font-size:.74rem;
+  font-weight:600;
+  color:var(--accent-warm);
+  background:rgba(232,162,61,.12);
+  border:1px solid rgba(232,162,61,.35);
+  padding:.35rem .7rem;
+  border-radius:20px;
+  white-space:nowrap;
+}
+
+/* =========================================================
+   "Reprendre où j'étais" banners
+   ========================================================= */
+.resume-banner{
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+  width:100%;
+  max-width:900px;
+  margin:0 0 1rem;
+  padding:.85rem 1.1rem;
+  background:rgba(77,208,196,.08);
+  border:1px solid rgba(77,208,196,.3);
+  border-radius:10px;
+}
+.resume-text{
+  font-size:.88rem;
+  color:var(--text);
+}
+.resume-text strong{ color:var(--accent); }
+
+#resumeBtn, .btn-resume{
+  font-family:var(--font-display);
+  font-size:.78rem;
+  font-weight:700;
+  background:var(--accent);
+  color:#0A0E14;
+  border:none;
+  border-radius:8px;
+  padding:.5rem 1rem;
+  text-decoration:none;
+  cursor:pointer;
+  transition:filter .18s ease, transform .12s ease;
+}
+#resumeBtn:hover, .btn-resume:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+
+/* Home page variant sits centered under the intro paragraph */
+#resumeBannerHome{ max-width:640px; margin:0 auto 2rem; text-align:left; }
+
+/* =========================================================
+   Shared notes
+   ========================================================= */
+.notes-section{
+  width:100%;
+  max-width:900px;
+  margin-top:1.5rem;
+}
+.notes-section h3{
+  font-family:var(--font-display);
+  font-size:.95rem;
+  color:var(--text);
+  margin-bottom:.8rem;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.notes-section h3::before{ content:"▸"; color:var(--accent-warm); }
+
+#noteForm{
+  display:flex;
+  gap:10px;
+  margin-bottom:1rem;
+  align-items:flex-start;
+}
+#noteInput{
+  flex:1;
+  min-height:70px;
+  padding:.7rem .85rem;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:.88rem;
+  resize:vertical;
+  outline:none;
+}
+#noteInput:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(77,208,196,.15); }
+
+#noteForm button{
+  flex-shrink:0;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:.8rem;
+  background:var(--accent-warm);
+  color:#0A0E14;
+  border:none;
+  border-radius:8px;
+  padding:.7rem 1.1rem;
+  cursor:pointer;
+  transition:filter .18s ease;
+}
+#noteForm button:hover{ filter:brightness(1.08); }
+
+.notes-list{ display:flex; flex-direction:column; gap:10px; }
+
+.notes-empty{
+  color:var(--text-muted);
+  font-size:.85rem;
+  padding:.6rem 0;
+}
+
+.note-item{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  border-radius:8px;
+  padding:.8rem 1rem;
+}
+.note-author{
+  font-family:var(--font-display);
+  font-size:.75rem;
+  font-weight:700;
+  color:var(--accent);
+  display:block;
+  margin-bottom:.3rem;
+}
+.note-text{
+  font-size:.88rem;
+  color:var(--text);
+  white-space:pre-wrap;
+  margin:0;
+}
+
+@media (max-width:600px){
+  #noteForm{ flex-direction:column; }
+  #noteForm button{ width:100%; }
+}
