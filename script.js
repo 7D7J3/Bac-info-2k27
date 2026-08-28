@@ -40,7 +40,7 @@ const coursesData = {
 };
 
 // URL الجديد متاع الـ Apps Script
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwn8iyhAKskuD1QrVi3nnXAuTXmA05uwiggdTc49X7HVAg5ra75cVaZcUzhn1hZbOQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzAd7S5kJ2Q6wR_u_-Tlrw55tXg0b0THZS82eKgNM-_C4zBgIAMmGGMyqG94B7L_29M/exec";
 
 // Mapping matière -> page (utilisé par le bandeau "Reprendre où j'étais" de l'accueil)
 const subjectPages = {
@@ -51,9 +51,10 @@ const subjectPages = {
     "STI (Mr Omar)": "sti-omar.html"
 };
 
-// URL du Web App Google Apps Script qui gère les NOTES PARTAGÉES (voir instructions fournies séparément)
-// Remplace la valeur ci-dessous par l'URL de ton propre déploiement Apps Script.
-const NOTES_SCRIPT_URL = "COLLEZ_ICI_VOTRE_URL_APPS_SCRIPT_NOTES";
+// URL du Web App Google Apps Script qui gère les NOTES PARTAGÉES.
+// (déploiement séparé de SCRIPT_URL — même Code.gs, mais nouvelle URL générée
+// lors de la création du nouveau déploiement)
+const NOTES_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlzSl5LCSG33gIdq1zTl5cFLo4Fkd3rGtN_dUOEdX0pU_8pXf4mZ5J8C2K1OC4Hovk/exec";
 
 // Date du Bac (session Tunisie) — le ministère n'a pas encore publié le calendrier 2027,
 // cette date est une estimation à ajuster dès que le calendrier officiel sort.
