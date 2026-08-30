@@ -670,3 +670,105 @@ header h1::before{ content:"▸"; color:var(--accent-warm); }
   #noteForm{ flex-direction:column; }
   #noteForm button{ width:100%; }
 }
+
+/* =========================================================
+   Documents PDF (cours / séries / corrections)
+   ========================================================= */
+.pdf-chapter{ margin-bottom:1rem; }
+.pdf-chapter-title{
+  font-family:var(--font-display);
+  font-size:.74rem;
+  font-weight:700;
+  color:var(--accent-warm);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:.5rem;
+}
+.pdf-links{ display:flex; flex-wrap:wrap; gap:8px; }
+.pdf-link{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:.85rem;
+  color:var(--text);
+  text-decoration:none;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:.5rem .8rem;
+  transition:border-color .18s ease, color .18s ease, transform .12s ease;
+}
+.pdf-link:hover{ border-color:var(--accent); color:var(--accent); transform:translateY(-1px); }
+.pdf-link{ font-family:var(--font-body); cursor:pointer; }
+
+/* Documents header: count + search */
+.pdfs-count{
+  font-family:var(--font-body);
+  font-size:.72rem;
+  font-weight:400;
+  color:var(--text-muted);
+  margin-left:4px;
+}
+.pdfs-search{
+  width:100%;
+  padding:.6rem .8rem;
+  margin-bottom:.9rem;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:.85rem;
+  outline:none;
+  transition:border-color .18s ease, box-shadow .18s ease;
+}
+.pdfs-search:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(77,208,196,.15); }
+.pdfs-search::placeholder{ color:var(--text-muted); }
+
+/* PDF preview modal */
+.pdf-preview-card{
+  max-width:760px;
+  width:95%;
+  padding:1.1rem;
+}
+.pdf-preview-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:.8rem;
+}
+.pdf-preview-header h2{
+  font-size:.95rem;
+  margin:0;
+  text-align:left;
+  color:var(--text);
+}
+.pdf-preview-close{
+  flex-shrink:0;
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text-muted);
+  border-radius:8px;
+  width:32px;
+  height:32px;
+  cursor:pointer;
+  font-size:.9rem;
+  transition:border-color .18s ease, color .18s ease;
+}
+.pdf-preview-close:hover{ border-color:var(--danger); color:var(--danger); }
+.pdf-preview-frame{
+  width:100%;
+  height:60vh;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:#fff;
+}
+.pdf-preview-openlink{
+  display:inline-block;
+  margin-top:.9rem;
+}
+
+@media (max-width:600px){
+  .pdf-preview-frame{ height:50vh; }
+}
