@@ -26,12 +26,23 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="pdfPreviewModal" style="display:none;">
+    <div class="modal-card pdf-preview-card">
+      <div class="pdf-preview-header">
+        <h2 id="pdfPreviewTitle">Document</h2>
+        <button type="button" id="pdfPreviewClose" class="pdf-preview-close" aria-label="Fermer">✕</button>
+      </div>
+      <iframe id="pdfPreviewFrame" class="pdf-preview-frame" src="" title="Aperçu du document"></iframe>
+      <a id="pdfPreviewOpenLink" class="btn-resume pdf-preview-openlink" href="#" target="_blank" rel="noopener">Ouvrir dans Google Drive ↗</a>
+    </div>
+  </div>
+
   <header>
     <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
       <h1>Mathématiques</h1>
       <span class="countdown-chip"></span>
     </div>
-    <a href="index.html" class="back-btn">← Arje3  lel les matiers </a>
+    <a href="index.html" class="back-btn">← Arje3 l-el-Main Page</a>
   </header>
 
   <div class="main-layout">
@@ -64,9 +75,15 @@
       </div>
 
       <div class="notes-section">
+        <h3>Documents (PDF) <span class="pdfs-count" id="pdfsCount"></span></h3>
+        <input type="text" id="pdfsSearch" class="pdfs-search" placeholder="Rechercher un document (chapitre, titre)...">
+        <div id="pdfsList" class="notes-list"></div>
+      </div>
+
+      <div class="notes-section">
         <h3>Notes des élèves</h3>
         <form id="noteForm">
-          <textarea id="noteInput" placeholder="7ot el method eli fhemt beha bech t3awn beha 8irek ykou kifk mfhemhech 😉 " required></textarea>
+          <textarea id="noteInput" placeholder="Ajoute une note utile pour cette séance..." required></textarea>
           <button type="submit">Publier</button>
         </form>
         <div id="notesList" class="notes-list"></div>
