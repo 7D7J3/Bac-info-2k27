@@ -393,9 +393,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Documents PDF : recherche + modal de preview
+    const pdfsSearch = document.getElementById('pdfsSearch');
+    if (pdfsSearch) {
+        pdfsSearch.addEventListener('input', function() {
+            renderPdfItems(this.value);
+        });
+    }
+
+    const pdfPreviewClose = document.getElementById('pdfPreviewClose');
+    if (pdfPreviewClose) pdfPreviewClose.addEventListener('click', closePdfPreview);
+
+    const pdfPreviewModal = document.getElementById('pdfPreviewModal');
+    if (pdfPreviewModal) {
+        pdfPreviewModal.addEventListener('click', function(e) {
+            if (e.target === pdfPreviewModal) closePdfPreview();
+        });
+    }
+
     showResumeBannerIfAny();
     showHomeResumeBanner();
     updateBacCountdown();
+    loadPdfsForSubject();
 });
 
 // ---------- "Reprendre où j'étais" ----------
@@ -473,6 +492,121 @@ function loadNotesForVideo(videoId) {
             `).join('');
         })
         .catch(() => { list.innerHTML = '<p class="notes-empty">Impossible de charger les notes pour le moment.</p>'; });
+}
+
+// ---------- Documents PDF (cours / séries / corrections), gérés depuis le Google Sheet "PDFs" ----------
+let allPdfItems = [];
+
+function getPdfIcon(title) {
+    const t = (title || '').toLowerCase();
+    if (t.indexOf('correc') !== -1) return '✅';
+    if (t.indexOf('série') !== -1 || t.indexOf('serie') !== -1 || t.indexOf('exercice') !== -1) return '📝';
+    if (t.indexOf('cours') !== -1) return '📘';
+    return '📁';
+}
+
+function extractDriveId(link) {
+    const folderMatch = (link || '').match(/\/folders\/([a-zA-Z0-9_-]+)/);
+    if (folderMatch) return { id: folderMatch[1], type: 'folder' };
+    const fileMatch = (link || '').match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileMatch) return { id: fileMatch[1], type: 'file' };
+    return null;
+}
+
+function buildPreviewUrl(link) {
+    const parsed = extractDriveId(link);
+    if (!parsed) return null;
+    if (parsed.type === 'folder') {
+        return 'https://drive.google.com/embeddedfolderview?id=' + parsed.id + '#grid';
+    }
+    return 'https://drive.google.com/file/d/' + parsed.id + '/preview';
+}
+
+function openPdfPreview(link, title) {
+    const modal = document.getElementById('pdfPreviewModal');
+    const frame = document.getElementById('pdfPreviewFrame');
+    const titleEl = document.getElementById('pdfPreviewTitle');
+    const openLink = document.getElementById('pdfPreviewOpenLink');
+    if (!modal || !frame) return;
+
+    frame.src = buildPreviewUrl(link) || '';
+    if (titleEl) titleEl.textContent = title || 'Document';
+    if (openLink) openLink.href = link;
+    modal.style.display = 'flex';
+}
+
+function closePdfPreview() {
+    const modal = document.getElementById('pdfPreviewModal');
+    const frame = document.getElementById('pdfPreviewFrame');
+    if (modal) modal.style.display = 'none';
+    if (frame) frame.src = '';
+}
+
+function renderPdfItems(filterText) {
+    const container = document.getElementById('pdfsList');
+    const countEl = document.getElementById('pdfsCount');
+    if (!container) return;
+
+    const filter = (filterText || '').toLowerCase().trim();
+    const filtered = !filter ? allPdfItems : allPdfItems.filter(it =>
+        (it.chapter || '').toLowerCase().indexOf(filter) !== -1 ||
+        (it.title || '').toLowerCase().indexOf(filter) !== -1
+    );
+
+    if (countEl) {
+        countEl.textContent = allPdfItems.length
+            ? `(${allPdfItems.length} document${allPdfItems.length > 1 ? 's' : ''})`
+            : '';
+    }
+
+    if (!filtered.length) {
+        container.innerHTML = `<p class="notes-empty">${allPdfItems.length ? 'Aucun document ne correspond à ta recherche.' : 'Aucun document ajouté pour cette matière pour le moment.'}</p>`;
+        return;
+    }
+
+    const byChapter = {};
+    filtered.forEach(it => {
+        const chapter = it.chapter || 'Général';
+        if (!byChapter[chapter]) byChapter[chapter] = [];
+        byChapter[chapter].push(it);
+    });
+
+    container.innerHTML = Object.keys(byChapter).map(chapter => `
+        <div class="pdf-chapter">
+            <div class="pdf-chapter-title">${escapeHtml(chapter)}</div>
+            <div class="pdf-links">
+                ${byChapter[chapter].map(it => `
+                    <button type="button" class="pdf-link" data-link="${escapeHtml(it.link)}" data-title="${escapeHtml(it.title || 'Document')}">
+                        ${getPdfIcon(it.title)} ${escapeHtml(it.title || 'Document')}
+                    </button>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    container.querySelectorAll('.pdf-link').forEach(btn => {
+        btn.addEventListener('click', () => openPdfPreview(btn.getAttribute('data-link'), btn.getAttribute('data-title')));
+    });
+}
+
+function loadPdfsForSubject() {
+    const container = document.getElementById('pdfsList');
+    const subject = document.body.getAttribute('data-subject');
+    if (!container || !subject) return;
+
+    if (!NOTES_SCRIPT_URL || NOTES_SCRIPT_URL.indexOf('COLLEZ_ICI') === 0) {
+        container.innerHTML = '<p class="notes-empty">Documents pas encore configurés côté admin.</p>';
+        return;
+    }
+
+    container.innerHTML = '<p class="notes-empty">Chargement des documents...</p>';
+    fetch(NOTES_SCRIPT_URL + '?type=pdfs&subject=' + encodeURIComponent(subject))
+        .then(res => res.json())
+        .then(items => {
+            allPdfItems = items || [];
+            renderPdfItems('');
+        })
+        .catch(() => { container.innerHTML = '<p class="notes-empty">Impossible de charger les documents pour le moment.</p>'; });
 }
 
 function loadVideo(chapter, index, id, element) {
