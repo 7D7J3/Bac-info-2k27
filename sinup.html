@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bac-Info 3al-Tayer — Inscription</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    .tabs { display:flex; gap:8px; margin-bottom:16px; }
+    .tabs button { flex:1; opacity:.55; }
+    .tabs button.on { opacity:1; }
+    .or { text-align:center; color:#94a3b8; font-size:.8rem; margin:14px 0 10px; }
+    #gbtn { display:flex; justify-content:center; }
+    #msg { margin-top:12px; font-size:.85rem; color:#f87171; min-height:1.2em; text-align:center; }
+    #msg.ok { color:#4ade80; }
+  </style>
+</head>
+<body>
+  <div class="modal-overlay" style="display:flex;">
+    <div class="modal-card">
+      <h2>Bac-Info 3al-Tayer</h2>
+
+      <div id="authBox">
+        <div class="tabs">
+          <button type="button" id="tabSignup" class="on">Inscription</button>
+          <button type="button" id="tabLogin">Connexion</button>
+        </div>
+
+        <form id="signupForm">
+          <div class="input-group"><label>Nom & Prénom</label><input type="text" id="suName" required></div>
+          <div class="input-group"><label>Email</label><input type="email" id="suEmail" required></div>
+          <div class="input-group"><label>Mot de passe (min 6)</label><input type="password" id="suPass" minlength="6" required></div>
+          <div class="input-group"><label>Confirmer le mot de passe</label><input type="password" id="suPass2" minlength="6" required></div>
+          <button type="submit">Créer mon compte</button>
+        </form>
+
+        <form id="loginForm" style="display:none;">
+          <div class="input-group"><label>Email</label><input type="email" id="liEmail" required></div>
+          <div class="input-group"><label>Mot de passe</label><input type="password" id="liPass" required></div>
+          <button type="submit">Se connecter</button>
+        </form>
+
+        <div class="or">— ou —</div>
+        <div id="gbtn"></div>
+      </div>
+
+      <form id="codeForm" style="display:none;">
+        <p style="margin-bottom:10px; font-size:0.85rem; color:#94a3b8;">
+          Contacte l'admin pour recevoir ton code d'accès, puis entre-le ici :
+        </p>
+        <div class="input-group"><label>Code d'accès</label><input type="text" id="codeInput" inputmode="numeric" required></div>
+        <button type="submit">Valider & Entrer</button>
+      </form>
+
+      <div id="msg"></div>
+    </div>
+  </div>
+  <script src="auth.js"></script>
+</body>
+</html>
