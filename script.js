@@ -297,80 +297,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (rewindBtn) rewindBtn.addEventListener('click', () => seekRelative(-10));
     if (forwardBtn) forwardBtn.addEventListener('click', () => seekRelative(10));
 
-    // Smart Login Logic
-    const loginForm = document.getElementById('loginForm');
-    const codeForm = document.getElementById('codeForm');
-
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('userName').value.trim();
-            const email = document.getElementById('userEmail').value.trim().toLowerCase();
-            const pass = document.getElementById('userPass').value.trim();
-
-            currentEmailAttempt = email;
-            currentNameAttempt = name;
-
-            let verifiedEmails = JSON.parse(localStorage.getItem('verifiedEmails') || "[]");
-
-            if (verifiedEmails.includes(email)) {
-                localStorage.setItem('bacInfoAccessGranted', 'true');
-                localStorage.setItem('loginDate', new Date().toDateString());
-                localStorage.setItem('userName', name);
-                updateDisplayName();
-                unlockPlatform();
-                return;
-            }
-
-            // إيجاد كود جديد
-            generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-            // بعث المعطيات + الكود للـ Apps Script
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    password: pass,
-                    code: generatedCode
-                })
-            }).then(() => {
-                loginForm.style.display = 'none';
-                codeForm.style.display = 'block';
-            }).catch(() => {
-                alert("Erreur lors de l'envoi.");
-            });
-        });
+    // Auth : si pas connecté -> signup.html (login/signup/Google/code gérés dans auth.js)
+    if (localStorage.getItem('bacInfoAccessGranted') !== 'true') {
+        location.replace('signup.html');
+        return;
     }
-
-    if (codeForm) {
-        codeForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const enteredCode = document.getElementById('verificationCodeInput').value.trim();
-
-            if (enteredCode === generatedCode) {
-                let verifiedEmails = JSON.parse(localStorage.getItem('verifiedEmails') || "[]");
-                if (!verifiedEmails.includes(currentEmailAttempt)) {
-                    verifiedEmails.push(currentEmailAttempt);
-                    localStorage.setItem('verifiedEmails', JSON.stringify(verifiedEmails));
-                }
-
-                localStorage.setItem('bacInfoAccessGranted', 'true');
-                localStorage.setItem('loginDate', new Date().toDateString());
-                localStorage.setItem('userName', currentNameAttempt || 'Élève');
-                updateDisplayName();
-                unlockPlatform();
-            } else {
-                alert("Code incorrect ! Contactez l'administrateur.");
-            }
-        });
-    }
-
-    if (localStorage.getItem('bacInfoAccessGranted') === 'true') {
-        unlockPlatform();
-    }
+    unlockPlatform();
 
     // Note form (partagée avec tout le monde, avec le nom de l'auteur)
     const noteForm = document.getElementById('noteForm');
