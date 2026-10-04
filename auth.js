@@ -44,7 +44,7 @@ function handleResult(r) {
         bad_token: "Connexion Google invalide, réessaie.",
         invalid: "Données invalides."
     };
-    msg(errors[r.status] || "Erreur, réessaie.");
+    msg(errors[r.status] || ("Erreur serveur : " + (r.error || JSON.stringify(r))));
 }
 
 async function call(payload) {
