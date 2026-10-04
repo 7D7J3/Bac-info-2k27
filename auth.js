@@ -1,6 +1,6 @@
 // ====== À CONFIGURER ======
 const AUTH_URL = "https://script.google.com/macros/s/AKfycbzlzSl5LCSG33gIdq1zTl5cFLo4Fkd3rGtN_dUOEdX0pU_8pXf4mZ5J8C2K1OC4Hovk/exec";
-const GOOGLE_CLIENT_ID = "COLLEZ_ICI.apps.googleusercontent.com";  // Client ID OAuth (Google Cloud Console)
+const GOOGLE_CLIENT_ID = "321091889082-h1kkib92ftf967l9tccvpd7ck1f552ar.apps.googleusercontent.com";  // Client ID OAuth (Google Cloud Console)
 // ==========================
 
 let pendingEmail = "";
