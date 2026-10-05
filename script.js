@@ -570,6 +570,157 @@ function togglePlay() {
     }
 }
 
+
+// =====================================================================
+//  AJOUTS : thème clair/sombre, progression par vidéo, rappel du Bac
+// =====================================================================
+
+// ---------- Thème ----------
+function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('theme', t);
+    const b = document.getElementById('themeBtn');
+    if (b) b.textContent = t === 'light' ? '🌙' : '☀️';
+}
+applyTheme(localStorage.getItem('theme') || 'dark');
+
+// ---------- Progression par vidéo (sauvegardée par élève) ----------
+function progressKey() { return 'progress_' + (localStorage.getItem('userEmail') || 'anon'); }
+
+function getProgress() {
+    try { return JSON.parse(localStorage.getItem(progressKey())) || {}; } catch (e) { return {}; }
+}
+
+// retourne true si la vidéo vient de passer à "vue" (>= 90%)
+function setProgress(id, pct) {
+    const p = getProgress();
+    const v = Math.floor(pct);
+    const before = p[id] || 0;
+    if (v <= before) return false;
+    p[id] = v;
+    localStorage.setItem(progressKey(), JSON.stringify(p));
+    return before < 90 && v >= 90;
+}
+
+function paintBadge(badge, pct) {
+    badge.textContent = pct >= 90 ? '✓' : pct + '%';
+    badge.classList.remove('badge-red', 'badge-orange', 'badge-green');
+    badge.classList.add(pct < 40 ? 'badge-red' : (pct < 80 ? 'badge-orange' : 'badge-green'));
+}
+
+function refreshVideoBadges(id) {
+    const pct = getProgress()[id] || 0;
+    document.querySelectorAll('[id="badge-' + id + '"]').forEach(b => paintBadge(b, pct));
+}
+
+// "Chapitre — x/y vues" dans la sidebar
+function updateChapterCounters() {
+    const tree = document.getElementById('subjectTree');
+    if (!tree) return;
+    const prog = getProgress();
+    let heading = null, done = 0, total = 0;
+    const flush = () => {
+        if (!heading) return;
+        const title = heading.getAttribute('data-title');
+        heading.textContent = title + '  ·  ' + done + '/' + total + (done === total && total > 0 ? ' ✓' : '');
+    };
+    Array.from(tree.children).forEach(el => {
+        if (el.classList.contains('chapter-heading')) {
+            flush();
+            heading = el; done = 0; total = 0;
+            if (!el.getAttribute('data-title')) el.setAttribute('data-title', el.textContent);
+        } else if (el.classList.contains('video-link')) {
+            total++;
+            const badge = el.querySelector('.badge-status');
+            const vid = badge ? badge.id.replace('badge-', '') : '';
+            if ((prog[vid] || 0) >= 90) done++;
+        }
+    });
+    flush();
+}
+
+// on enveloppe updateUIProgress (appelée toutes les 500ms pendant la lecture)
+const _origUpdateUIProgress = updateUIProgress;
+updateUIProgress = function (current, duration, percentage) {
+    _origUpdateUIProgress(current, duration, percentage);
+    if (!currentVideoId) return;
+    const justDone = setProgress(currentVideoId, percentage);
+    refreshVideoBadges(currentVideoId);
+    if (justDone) updateChapterCounters();
+};
+
+// ---------- Accueil : progression par matière + rappel Bac ----------
+function uniqueVideos(subject) {
+    const set = new Set();
+    Object.values(coursesData[subject] || {}).forEach(arr => arr.forEach(v => set.add(v)));
+    return Array.from(set);
+}
+
+function renderHomeExtras() {
+    const grid = document.querySelector('.subjects-grid');
+    if (!grid) return;
+    const prog = getProgress();
+    const all = new Set(), allDone = new Set();
+
+    document.querySelectorAll('.subject-card').forEach(card => {
+        const href = card.getAttribute('href');
+        const subject = Object.keys(subjectPages).find(k => subjectPages[k] === href);
+        if (!subject) return;
+        const vids = uniqueVideos(subject);
+        const done = vids.filter(v => (prog[v] || 0) >= 90);
+        vids.forEach(v => all.add(v));
+        done.forEach(v => allDone.add(v));
+        const pct = vids.length ? Math.round(done.length / vids.length * 100) : 0;
+        const box = document.createElement('div');
+        box.className = 'subj-progress';
+        box.innerHTML = '<div class="bar"><span style="width:' + pct + '%"></span></div>' +
+                        '<small>' + done.length + '/' + vids.length + ' séances · ' + pct + '%</small>';
+        card.appendChild(box);
+    });
+
+    const days = Math.ceil((BAC_DATE - new Date()) / 86400000);
+    const remaining = all.size - allDone.size;
+    const rem = document.createElement('div');
+    rem.className = 'bac-reminder';
+    if (days <= 0) {
+        rem.textContent = '💪 Bonne chance pour le Bac !';
+    } else if (remaining <= 0) {
+        rem.textContent = '🎉 Bravo ! Tu as terminé toutes les séances. Continue à réviser avant le Bac (J-' + days + ').';
+    } else {
+        const perWeek = Math.ceil(remaining / Math.max(days / 7, 1));
+        rem.innerHTML = '⏰ <strong>J-' + days + '</strong> avant le Bac · il te reste <strong>' + remaining +
+                        ' séances</strong> à voir, soit environ <strong>' + perWeek + ' par semaine</strong>.';
+    }
+    grid.parentNode.insertBefore(rem, grid);
+}
+
+// ---------- Initialisation des ajouts ----------
+document.addEventListener('DOMContentLoaded', function () {
+    // bouton thème dans le header
+    const box = document.querySelector('header > div');
+    if (box && !document.getElementById('themeBtn')) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = 'themeBtn';
+        btn.className = 'theme-btn';
+        btn.title = 'Mode clair / sombre';
+        btn.addEventListener('click', () => {
+            applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+        });
+        box.appendChild(btn);
+        applyTheme(localStorage.getItem('theme') || 'dark');
+    }
+
+    // restaurer la progression dans la sidebar
+    const prog = getProgress();
+    document.querySelectorAll('#subjectTree .badge-status').forEach(b => {
+        const pct = prog[b.id.replace('badge-', '')] || 0;
+        if (pct > 0) paintBadge(b, pct);
+    });
+    updateChapterCounters();
+
+    renderHomeExtras();
+});
 function unlockPlatform() {
     let modal = document.getElementById('loginModal');
     if (modal) modal.style.display = 'none';
