@@ -1,6 +1,6 @@
 // ====== À CONFIGURER ======
 const AUTH_URL = "https://script.google.com/macros/s/AKfycbzlzSl5LCSG33gIdq1zTl5cFLo4Fkd3rGtN_dUOEdX0pU_8pXf4mZ5J8C2K1OC4Hovk/exec";
-const GOOGLE_CLIENT_ID = "321091889082-h1kkib92ftf967l9tccvpd7ck1f552ar.apps.googleusercontent.com";  // Client ID OAuth (Google Cloud Console)
+const GOOGLE_CLIENT_ID = "321091889082-h1kkib92ftf967l9tccvpd7ck1f552ar.apps.googleusercontent.com";
 // ==========================
 
 let pendingEmail = "";
@@ -13,7 +13,6 @@ function msg(text, ok) {
 }
 
 async function api(payload) {
-    // pas de header custom => "simple request", Apps Script répond avec CORS ouvert
     const res = await fetch(AUTH_URL, { method: 'POST', body: JSON.stringify(payload) });
     return res.json();
 }
@@ -33,15 +32,30 @@ function showCodeStep(email) {
     msg("Code envoyé à l'admin. Demande-le lui puis entre-le ici.", true);
 }
 
+function showResetStep(email) {
+    pendingEmail = email;
+    $('forgotForm').style.display = 'none';
+    $('resetForm').style.display = 'block';
+    msg("Code envoyé à l'admin. Demande-le lui puis entre-le ici.", true);
+}
+
 function handleResult(r) {
     if (r.status === 'ok') return grant(r.name, r.email);
     if (r.status === 'code_sent' || r.status === 'pending') return showCodeStep(r.email);
+    if (r.status === 'reset_sent') return showResetStep(r.email);
+    if (r.status === 'reset_ok') {
+        $('resetForm').style.display = 'none';
+        $('authBox').style.display = 'block';
+        tab(false);
+        return msg("Mot de passe changé ! Connecte-toi.", true);
+    }
     const errors = {
         exists: "Ce compte existe déjà : utilise l'onglet Connexion.",
         no_account: "Aucun compte avec cet email : inscris-toi d'abord.",
         bad_password: "Mot de passe incorrect.",
         bad_code: "Code incorrect ! Contacte l'administrateur.",
         bad_token: "Connexion Google invalide, réessaie.",
+        blocked: "Compte bloqué. Contacte l'administrateur.",
         invalid: "Données invalides."
     };
     msg(errors[r.status] || ("Erreur serveur : " + (r.error || JSON.stringify(r))));
@@ -87,6 +101,34 @@ $('loginForm').addEventListener('submit', e => {
 $('codeForm').addEventListener('submit', e => {
     e.preventDefault();
     call({ action: 'verify', email: pendingEmail, code: $('codeInput').value.trim() });
+});
+
+// Mot de passe oublié
+$('forgotLink').addEventListener('click', e => {
+    e.preventDefault();
+    $('authBox').style.display = 'none';
+    $('forgotForm').style.display = 'block';
+    msg('');
+});
+$('forgotBack').addEventListener('click', e => {
+    e.preventDefault();
+    $('forgotForm').style.display = 'none';
+    $('authBox').style.display = 'block';
+    msg('');
+});
+$('forgotForm').addEventListener('submit', e => {
+    e.preventDefault();
+    call({ action: 'forgot', email: $('fgEmail').value.trim().toLowerCase() });
+});
+$('resetForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if ($('rsPass').value !== $('rsPass2').value) return msg("Les mots de passe ne correspondent pas.");
+    call({
+        action: 'reset',
+        email: pendingEmail,
+        code: $('rsCode').value.trim(),
+        password: $('rsPass').value
+    });
 });
 
 // Google Sign-In
