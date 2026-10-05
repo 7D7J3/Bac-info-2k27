@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Admin — Bac-Info 3al-Tayer</title>
+  <link rel="stylesheet" href="style.css">
+  <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+  <style>
+    .wrap { max-width: 760px; margin: 0 auto; padding: 1.2rem; }
+    .stats { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+    .stat { flex:1; min-width:90px; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px; text-align:center; }
+    .stat b { display:block; font-size:1.4rem; color:var(--accent-warm); }
+    .stat small { color:var(--text-muted); }
+    .row { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:8px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; }
+    .row .who { min-width:200px; flex:1; word-break:break-all; }
+    .row .who small { color:var(--text-muted); display:block; }
+    .tag { font-size:.72rem; padding:2px 8px; border-radius:99px; border:1px solid var(--border); }
+    .tag.verified { color:var(--success); } .tag.pending { color:var(--accent-warm); } .tag.blocked { color:var(--danger); }
+    .acts button { padding:.35rem .6rem; font-size:.78rem; margin-left:4px; cursor:pointer; }
+    #adminSearch { width:100%; padding:.6rem .8rem; background:var(--bg); border:1px solid var(--border); border-radius:10px; color:var(--text); margin-bottom:12px; }
+    #amsg { color:#f87171; margin-top:10px; min-height:1.2em; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2 style="margin-bottom:14px;">Admin — Comptes</h2>
+
+    <form id="keyForm">
+      <div class="input-group"><label>Clé admin</label><input type="password" id="keyInput" required></div>
+      <button type="submit">Entrer</button>
+    </form>
+    <div id="amsg"></div>
+
+    <div id="panel" style="display:none;">
+      <div class="stats" id="stats"></div>
+      <input type="text" id="adminSearch" placeholder="Rechercher (nom ou email)...">
+      <div id="list"></div>
+    </div>
+  </div>
+
+  <script>
+    const AUTH_URL = "https://script.google.com/macros/s/AKfycbzlzSl5LCSG33gIdq1zTl5cFLo4Fkd3rGtN_dUOEdX0pU_8pXf4mZ5J8C2K1OC4Hovk/exec";
+    let KEY = '', users = [];
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    async function api(p) {
+      const r = await fetch(AUTH_URL, { method: 'POST', body: JSON.stringify(p) });
+      return r.json();
+    }
+
+    async function load() {
+      try {
+        const r = await api({ action: 'admin_list', key: KEY });
+        if (r.status !== 'ok') { $('amsg').textContent = 'Clé incorrecte.'; return; }
+        users = r.users || [];
+        $('amsg').textContent = '';
+        $('keyForm').style.display = 'none';
+        $('panel').style.display = 'block';
+        render();
+      } catch (e) { $('amsg').textContent = 'Erreur réseau.'; }
+    }
+
+    function render() {
+      const q = $('adminSearch').value.toLowerCase().trim();
+      const count = st => users.filter(u => u.status === st).length;
+      $('stats').innerHTML =
+        `<div class="stat"><b>${users.length}</b><small>Total</small></div>` +
+        `<div class="stat"><b>${count('verified')}</b><small>Validés</small></div>` +
+        `<div class="stat"><b>${count('pending')}</b><small>En attente</small></div>` +
+        `<div class="stat"><b>${count('blocked')}</b><small>Bloqués</small></div>`;
+
+      const list = users.filter(u => !q || String(u.name).toLowerCase().includes(q) || String(u.email).toLowerCase().includes(q));
+      $('list').innerHTML = list.length ? list.slice().reverse().map(u => `
+        <div class="row">
+          <div class="who"><b>${esc(u.name)}</b> <span class="tag ${esc(u.status)}">${esc(u.status)}</span>
+            <small>${esc(u.email)}</small></div>
+          <div class="acts">
+            ${u.status !== 'verified' ? `<button data-act="verified" data-email="${esc(u.email)}">Valider</button>` : ''}
+            ${u.status !== 'blocked' ? `<button data-act="blocked" data-email="${esc(u.email)}">Bloquer</button>` : ''}
+            <button data-act="delete" data-email="${esc(u.email)}">Supprimer</button>
+          </div>
+        </div>`).join('') : '<p style="color:var(--text-muted)">Aucun compte.</p>';
+    }
+
+    $('keyForm').addEventListener('submit', e => { e.preventDefault(); KEY = $('keyInput').value; load(); });
+    $('adminSearch').addEventListener('input', render);
+    $('list').addEventListener('click', async e => {
+      const b = e.target.closest('button[data-act]');
+      if (!b) return;
+      const act = b.dataset.act, email = b.dataset.email;
+      if (act === 'delete' && !confirm('Supprimer ' + email + ' ?')) return;
+      b.disabled = true;
+      try {
+        const r = await api({ action: 'admin_set', key: KEY, email: email, value: act });
+        if (r.status !== 'ok') alert('Erreur : ' + r.status);
+      } catch (err) { alert('Erreur réseau.'); }
+      load();
+    });
+  </script>
+</body>
+</html>
