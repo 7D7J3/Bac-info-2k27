@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bac-Info 3al-Tayer — Inscription</title>
   <link rel="stylesheet" href="style.css">
+  <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     .tabs { display:flex; gap:8px; margin-bottom:16px; }
@@ -39,6 +40,7 @@
           <div class="input-group"><label>Email</label><input type="email" id="liEmail" required></div>
           <div class="input-group"><label>Mot de passe</label><input type="password" id="liPass" required></div>
           <button type="submit">Se connecter</button>
+          <p style="text-align:center;margin-top:10px;"><a href="#" id="forgotLink" style="color:#94a3b8;font-size:.85rem;">Mot de passe oublié ?</a></p>
         </form>
 
         <div class="or">— ou —</div>
@@ -51,6 +53,21 @@
         </p>
         <div class="input-group"><label>Code d'accès</label><input type="text" id="codeInput" inputmode="numeric" required></div>
         <button type="submit">Valider & Entrer</button>
+      </form>
+
+      <form id="forgotForm" style="display:none;">
+        <p style="margin-bottom:10px; font-size:0.85rem; color:#94a3b8;">Entre ton email : l'admin recevra un code de réinitialisation.</p>
+        <div class="input-group"><label>Email</label><input type="email" id="fgEmail" required></div>
+        <button type="submit">Demander le code</button>
+        <p style="text-align:center;margin-top:10px;"><a href="#" id="forgotBack" style="color:#94a3b8;font-size:.85rem;">← Retour</a></p>
+      </form>
+
+      <form id="resetForm" style="display:none;">
+        <p style="margin-bottom:10px; font-size:0.85rem; color:#94a3b8;">Entre le code reçu de l'admin et ton nouveau mot de passe :</p>
+        <div class="input-group"><label>Code</label><input type="text" id="rsCode" inputmode="numeric" required></div>
+        <div class="input-group"><label>Nouveau mot de passe (min 6)</label><input type="password" id="rsPass" minlength="6" required></div>
+        <div class="input-group"><label>Confirmer</label><input type="password" id="rsPass2" minlength="6" required></div>
+        <button type="submit">Changer le mot de passe</button>
       </form>
 
       <div id="msg"></div>
