@@ -800,3 +800,94 @@ window.addEventListener('pagehide', syncProgress);
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('bacInfoAccessGranted') === 'true') pullProgress();
 });
+
+
+// =====================================================================
+//  AJOUT : plein écran avec contrôles auto-masqués (5 s) + bouton captions
+// =====================================================================
+let _fsTimer = null;
+let _ccOn = localStorage.getItem('ccOn') === '1';
+let _ccAppliedFor = null;
+
+function applyCaptions() {
+    if (!(playerReady && player)) return;
+    try {
+        if (_ccOn) { player.loadModule('captions'); player.loadModule('cc'); }
+        else { player.unloadModule('captions'); player.unloadModule('cc'); }
+    } catch (e) {}
+}
+
+// par défaut les captions sont retirées à chaque nouvelle vidéo
+const _prevUpdateUIProgress = updateUIProgress;
+updateUIProgress = function (c, d, p) {
+    _prevUpdateUIProgress(c, d, p);
+    if (!_ccOn && _ccAppliedFor !== currentVideoId) {
+        _ccAppliedFor = currentVideoId;
+        applyCaptions();
+    }
+};
+
+function showFsControls(wrapper) {
+    wrapper.classList.remove('hide-controls');
+    clearTimeout(_fsTimer);
+    _fsTimer = setTimeout(function hide() {
+        if (isUserDragging) { _fsTimer = setTimeout(hide, 1000); return; }
+        wrapper.classList.add('hide-controls');
+    }, 5000);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const wrapper = document.querySelector('.player-wrapper');
+    const controls = document.querySelector('.controls-container');
+    const oldBtn = document.getElementById('fullscreenBtn');
+    if (!wrapper || !controls || !oldBtn) return;
+
+    const getFs = () => document.fullscreenElement || document.webkitFullscreenElement;
+
+    // nouveau bouton plein écran (remplace l'ancien : même look, nouvelle logique)
+    const fsBtn = oldBtn.cloneNode(true);
+    oldBtn.replaceWith(fsBtn);
+    fsBtn.addEventListener('click', function () {
+        if (getFs()) {
+            const ex = document.exitFullscreen || document.webkitExitFullscreen;
+            if (ex) ex.call(document);
+        } else {
+            const req = wrapper.requestFullscreen || wrapper.webkitRequestFullscreen;
+            if (req) req.call(wrapper);
+        }
+    });
+
+    function onFsChange() {
+        if (getFs() === wrapper) {
+            wrapper.appendChild(controls);       // les contrôles passent par-dessus la vidéo
+            showFsControls(wrapper);
+            try { screen.orientation.lock('landscape').catch(() => {}); } catch (e) {}
+        } else {
+            clearTimeout(_fsTimer);
+            wrapper.classList.remove('hide-controls');
+            if (controls.parentNode === wrapper) wrapper.after(controls);   // retour sous la vidéo
+            try { screen.orientation.unlock(); } catch (e) {}
+        }
+    }
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
+
+    // toucher / bouger sur l'écran => les contrôles réapparaissent, puis disparaissent après 5 s
+    ['pointerdown', 'pointermove', 'touchstart'].forEach(ev =>
+        wrapper.addEventListener(ev, () => { if (getFs() === wrapper) showFsControls(wrapper); }, { passive: true }));
+
+    // bouton captions (CC)
+    const ccBtn = document.createElement('button');
+    ccBtn.id = 'ccBtn';
+    ccBtn.type = 'button';
+    const paintCc = () => { ccBtn.textContent = _ccOn ? 'CC : ON' : 'CC : OFF'; };
+    paintCc();
+    ccBtn.addEventListener('click', () => {
+        _ccOn = !_ccOn;
+        localStorage.setItem('ccOn', _ccOn ? '1' : '0');
+        paintCc();
+        applyCaptions();
+    });
+    const box = document.querySelector('.buttons-box');
+    if (box) box.insertBefore(ccBtn, fsBtn);
+});
