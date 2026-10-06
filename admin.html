@@ -13,7 +13,8 @@
     .stat { flex:1; min-width:90px; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px; text-align:center; }
     .stat b { display:block; font-size:1.4rem; color:var(--accent-warm); }
     .stat small { color:var(--text-muted); }
-    .row { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:8px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; }
+    .row { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+    .row .top { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; }
     .row .who { min-width:200px; flex:1; word-break:break-all; }
     .row .who small { color:var(--text-muted); display:block; }
     .tag { font-size:.72rem; padding:2px 8px; border-radius:99px; border:1px solid var(--border); }
@@ -21,6 +22,14 @@
     .acts button { padding:.35rem .6rem; font-size:.78rem; margin-left:4px; cursor:pointer; }
     #adminSearch { width:100%; padding:.6rem .8rem; background:var(--bg); border:1px solid var(--border); border-radius:10px; color:var(--text); margin-bottom:12px; }
     #amsg { color:#f87171; margin-top:10px; min-height:1.2em; }
+    .detail { margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); }
+    .detail h4 { font-family:var(--font-display); font-size:.8rem; color:var(--accent); margin:10px 0 4px; }
+    .chap { margin-bottom:6px; font-size:.8rem; }
+    .chap small { color:var(--text-muted); }
+    .chips { display:flex; flex-wrap:wrap; gap:4px; margin-top:3px; }
+    .chip { font-size:.68rem; padding:2px 7px; border-radius:6px; border:1px solid var(--border); color:var(--text-muted); }
+    .chip.ok { color:var(--success); border-color:var(--success); }
+    .chip.part { color:var(--accent-warm); border-color:var(--accent-warm); }
   </style>
 </head>
 <body>
@@ -42,7 +51,8 @@
 
   <script>
     const AUTH_URL = "https://script.google.com/macros/s/AKfycbzlzSl5LCSG33gIdq1zTl5cFLo4Fkd3rGtN_dUOEdX0pU_8pXf4mZ5J8C2K1OC4Hovk/exec";
-    let KEY = '', users = [];
+    let KEY = '', users = [], PROG = {}, COURSES = null, TOTAL = 0;
+    const openSet = new Set();
     const $ = id => document.getElementById(id);
     const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -51,16 +61,56 @@
       return r.json();
     }
 
+    // lit la liste des cours directement dans script.js (même dossier)
+    async function loadCourses() {
+      if (COURSES) return;
+      try {
+        const t = await (await fetch('script.js?_=' + Date.now())).text();
+        const a = t.indexOf('const coursesData = ') + 'const coursesData = '.length;
+        const b = t.indexOf('\n};', a) + 3;
+        COURSES = new Function('return ' + t.slice(a, b))();
+        const all = new Set();
+        Object.values(COURSES).forEach(chs => Object.values(chs).forEach(ids => ids.forEach(v => all.add(v))));
+        TOTAL = all.size;
+      } catch (e) { COURSES = null; }
+    }
+
     async function load() {
       try {
         const r = await api({ action: 'admin_list', key: KEY });
         if (r.status !== 'ok') { $('amsg').textContent = 'Clé incorrecte.'; return; }
         users = r.users || [];
+        try {
+          const p = await api({ action: 'admin_progress', key: KEY });
+          PROG = p.status === 'ok' ? p.progress : {};
+        } catch (e) { PROG = {}; }
+        await loadCourses();
         $('amsg').textContent = '';
         $('keyForm').style.display = 'none';
         $('panel').style.display = 'block';
         render();
       } catch (e) { $('amsg').textContent = 'Erreur réseau.'; }
+    }
+
+    function userProg(email) { return PROG[String(email).toLowerCase()] || {}; }
+
+    function detailHtml(email) {
+      const p = userProg(email);
+      if (!COURSES) return '<small>Liste des cours indisponible.</small>';
+      if (!Object.keys(p).length) return '<small>Aucune vidéo enregistrée (l\'élève doit se reconnecter et regarder une vidéo après la mise à jour).</small>';
+      return Object.keys(COURSES).map(sub => {
+        const chaps = Object.keys(COURSES[sub]).map(ch => {
+          const ids = COURSES[sub][ch];
+          const done = ids.filter(v => (p[v] || 0) >= 90).length;
+          const chips = ids.map((v, i) => {
+            const pc = p[v] || 0;
+            const cls = pc >= 90 ? 'ok' : (pc > 0 ? 'part' : '');
+            return `<span class="chip ${cls}">S${i + 1}${pc >= 90 ? ' ✓' : (pc > 0 ? ' ' + pc + '%' : '')}</span>`;
+          }).join('');
+          return `<div class="chap"><b>${esc(ch)}</b> <small>${done}/${ids.length}</small><div class="chips">${chips}</div></div>`;
+        }).join('');
+        return `<h4>${esc(sub)}</h4>${chaps}`;
+      }).join('');
     }
 
     function render() {
@@ -73,16 +123,25 @@
         `<div class="stat"><b>${count('blocked')}</b><small>Bloqués</small></div>`;
 
       const list = users.filter(u => !q || String(u.name).toLowerCase().includes(q) || String(u.email).toLowerCase().includes(q));
-      $('list').innerHTML = list.length ? list.slice().reverse().map(u => `
+      $('list').innerHTML = list.length ? list.slice().reverse().map(u => {
+        const p = userProg(u.email);
+        const seen = Object.keys(p).filter(k => (p[k] || 0) >= 90).length;
+        const e = esc(u.email);
+        return `
         <div class="row">
-          <div class="who"><b>${esc(u.name)}</b> <span class="tag ${esc(u.status)}">${esc(u.status)}</span>
-            <small>${esc(u.email)}</small></div>
-          <div class="acts">
-            ${u.status !== 'verified' ? `<button data-act="verified" data-email="${esc(u.email)}">Valider</button>` : ''}
-            ${u.status !== 'blocked' ? `<button data-act="blocked" data-email="${esc(u.email)}">Bloquer</button>` : ''}
-            <button data-act="delete" data-email="${esc(u.email)}">Supprimer</button>
+          <div class="top">
+            <div class="who"><b>${esc(u.name)}</b> <span class="tag ${esc(u.status)}">${esc(u.status)}</span>
+              <small>${e} · ${seen}${TOTAL ? '/' + TOTAL : ''} vidéos vues</small></div>
+            <div class="acts">
+              <button data-act="detail" data-email="${e}">${openSet.has(u.email) ? 'Masquer' : 'Vidéos'}</button>
+              ${u.status !== 'verified' ? `<button data-act="verified" data-email="${e}">Valider</button>` : ''}
+              ${u.status !== 'blocked' ? `<button data-act="blocked" data-email="${e}">Bloquer</button>` : ''}
+              <button data-act="delete" data-email="${e}">Supprimer</button>
+            </div>
           </div>
-        </div>`).join('') : '<p style="color:var(--text-muted)">Aucun compte.</p>';
+          ${openSet.has(u.email) ? `<div class="detail">${detailHtml(u.email)}</div>` : ''}
+        </div>`;
+      }).join('') : '<p style="color:var(--text-muted)">Aucun compte.</p>';
     }
 
     $('keyForm').addEventListener('submit', e => { e.preventDefault(); KEY = $('keyInput').value; load(); });
@@ -91,6 +150,10 @@
       const b = e.target.closest('button[data-act]');
       if (!b) return;
       const act = b.dataset.act, email = b.dataset.email;
+      if (act === 'detail') {
+        if (openSet.has(email)) openSet.delete(email); else openSet.add(email);
+        return render();
+      }
       if (act === 'delete' && !confirm('Supprimer ' + email + ' ?')) return;
       b.disabled = true;
       try {
