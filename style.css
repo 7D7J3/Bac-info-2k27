@@ -801,3 +801,33 @@ html[data-theme="light"] .subject-card{ box-shadow:0 1px 3px rgba(15,23,42,.08);
 .subj-progress .bar{ height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
 .subj-progress .bar span{ display:block; height:100%; background:var(--accent-warm); }
 .subj-progress small{ display:block; margin-top:.3rem; color:var(--text-muted); font-size:.75rem; }
+
+
+/* =========================================================
+   AJOUT : plein écran — contrôles par-dessus la vidéo, masqués après 5 s
+   ========================================================= */
+.player-wrapper:fullscreen{
+  max-width:none; width:100vw; height:100vh; aspect-ratio:auto;
+  border:0; border-radius:0; box-shadow:none; background:#000;
+}
+.player-wrapper:-webkit-full-screen{
+  max-width:none; width:100vw; height:100vh; aspect-ratio:auto;
+  border:0; border-radius:0; box-shadow:none; background:#000;
+}
+.player-wrapper:fullscreen .controls-container{
+  position:absolute; left:0; right:0; bottom:0; z-index:20;
+  max-width:none; width:100%; border:0; border-radius:0;
+  background:linear-gradient(to top, rgba(0,0,0,.92), rgba(0,0,0,.6) 70%, transparent);
+  padding:1.4rem 1.2rem .9rem;
+  transition:opacity .3s ease;
+}
+.player-wrapper:-webkit-full-screen .controls-container{
+  position:absolute; left:0; right:0; bottom:0; z-index:20;
+  max-width:none; width:100%; border:0; border-radius:0;
+  background:linear-gradient(to top, rgba(0,0,0,.92), rgba(0,0,0,.6) 70%, transparent);
+  padding:1.4rem 1.2rem .9rem;
+  transition:opacity .3s ease;
+}
+.player-wrapper:fullscreen #timeDisplay{ color:#E7EBF0; }
+.player-wrapper.hide-controls .controls-container{ opacity:0; pointer-events:none; }
+.player-wrapper.hide-controls{ cursor:none; }
