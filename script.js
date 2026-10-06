@@ -570,6 +570,11 @@ function togglePlay() {
     }
 }
 
+function unlockPlatform() {
+    let modal = document.getElementById('loginModal');
+    if (modal) modal.style.display = 'none';
+}
+
 
 // =====================================================================
 //  AJOUTS : thème clair/sombre, progression par vidéo, rappel du Bac
@@ -721,7 +726,77 @@ document.addEventListener('DOMContentLoaded', function () {
 
     renderHomeExtras();
 });
-function unlockPlatform() {
-    let modal = document.getElementById('loginModal');
-    if (modal) modal.style.display = 'none';
+
+
+// =====================================================================
+//  AJOUT : synchronisation de la progression avec le serveur
+// =====================================================================
+let _lastSynced = '';
+let _syncTimer = null;
+
+function _progEmail() { return localStorage.getItem('userEmail') || ''; }
+
+function postAuth(payload) {
+    return fetch(NOTES_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload), keepalive: true })
+        .then(r => r.json());
 }
+
+function syncProgress() {
+    _syncTimer = null;
+    const email = _progEmail();
+    if (!email) return;
+    const raw = localStorage.getItem(progressKey()) || '{}';
+    if (raw === _lastSynced) return;
+    _lastSynced = raw;
+    postAuth({ action: 'progress_set', email: email, progress: JSON.parse(raw) })
+        .catch(() => { _lastSynced = ''; });
+}
+
+function scheduleSync() {
+    if (!_syncTimer) _syncTimer = setTimeout(syncProgress, 60000);
+}
+
+// chaque fois que la progression change, on programme un envoi (max 1 par minute)
+const _origSetProgress = setProgress;
+setProgress = function (id, pct) {
+    const r = _origSetProgress(id, pct);
+    scheduleSync();
+    return r;
+};
+
+// au chargement : récupérer la progression du serveur et fusionner (on garde le max)
+function pullProgress() {
+    const email = _progEmail();
+    if (!email) return;
+    postAuth({ action: 'progress_get', email: email }).then(r => {
+        if (!r || r.status !== 'ok') return;
+        const local = getProgress();
+        let changed = false;
+        Object.keys(r.progress || {}).forEach(id => {
+            const v = Number(r.progress[id]) || 0;
+            if (v > (local[id] || 0)) { local[id] = v; changed = true; }
+        });
+        if (changed) localStorage.setItem(progressKey(), JSON.stringify(local));
+
+        document.querySelectorAll('#subjectTree .badge-status').forEach(b => {
+            const pct = local[b.id.replace('badge-', '')] || 0;
+            if (pct > 0) paintBadge(b, pct);
+        });
+        updateChapterCounters();
+
+        document.querySelectorAll('.subj-progress, .bac-reminder').forEach(el => el.remove());
+        renderHomeExtras();
+
+        _lastSynced = '';
+        scheduleSync();
+    }).catch(() => {});
+}
+
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') syncProgress();
+});
+window.addEventListener('pagehide', syncProgress);
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('bacInfoAccessGranted') === 'true') pullProgress();
+});
